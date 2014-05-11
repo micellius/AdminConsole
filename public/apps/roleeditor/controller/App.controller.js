@@ -7,8 +7,13 @@
 sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.App", {
 
     onInit : function () {
-        this.getCsrfToken();
+        var controller = this;
+        this.router = sap.ui.core.UIComponent.getRouterFor(this);
+        this.router.attachRouteMatched(function(oEvent) {
+            controller.oRouteArguments = oEvent.getParameters().arguments;
+        });
         this.oEventBus = new sap.ui.core.EventBus();
+        this.getCsrfToken();
     },
 
     getCsrfToken: function(callback) {

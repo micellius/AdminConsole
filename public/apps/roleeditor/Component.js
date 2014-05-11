@@ -27,34 +27,44 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
             },
             routes : [
                 {
-                    pattern : ":id:",
-                    name : "master",
-                    viewPath : "sap.adminconsole.apps.roleeditor.view.master",
-                    view : "Master",
-                    viewLevel : 1,
-                    targetAggregation : "masterPages",
-                    subroutes: [{
-                        pattern : ":id:",
-                        name : "detail",
-                        view : "Detail",
-                        viewPath : "sap.adminconsole.apps.roleeditor.view.detail",
-                        viewLevel : 3,
-                        targetAggregation : "detailPages"
-                    }, {
-                        pattern : "{id}/assignment",
-                        name : "assignment",
-                        view : "Assignment",
-                        viewPath : "sap.adminconsole.apps.roleeditor.view.detail",
-                        viewLevel : 3,
-                        targetAggregation : "detailPages"
-                    }]
+                    pattern: "",
+                    name: "empty",
+                    viewPath: "sap.adminconsole.apps.roleeditor.view.master",
+                    view: "Master",
+                    targetAggregation: "masterPages"
+                }, {
+                    pattern: "roles/:id:",
+                    name: "master",
+                    viewPath: "sap.adminconsole.apps.roleeditor.view.master",
+                    view: "Master",
+                    targetAggregation: "masterPages",
+                    subroutes: [
+                        {
+                            pattern: "roles/:id:",
+                            name: "detail",
+                            view: "Detail",
+                            viewPath: "sap.adminconsole.apps.roleeditor.view.detail",
+                            targetAggregation: "detailPages"
+                        }, {
+                            pattern: "roles/{id}/assignment",
+                            name: "assignment",
+                            view: "Assignment",
+                            viewPath: "sap.adminconsole.apps.roleeditor.view.detail",
+                            targetAggregation: "detailPages"
+                        }
+                    ]
                 }
             ]
         }
     },
     init : function () {
+        jQuery.sap.require("sap.m.routing.RouteMatchedHandler");
+
         sap.ui.core.UIComponent.prototype.init.apply(this, arguments);
-        this.getRouter().initialize();
+        var oRouter = this.getRouter();
+        new sap.m.routing.RouteMatchedHandler(oRouter);
+        oRouter.register("router");
+        oRouter.initialize();
     },
     createContent : function () {
         return sap.ui.view({

@@ -11,6 +11,7 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.App", {
     },
 
     createContent: function(oController) {
+
         this.setDisplayBlock(true);
 
         this.oSplitApp = new sap.m.SplitApp("splitControl");
@@ -34,7 +35,12 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.App", {
         this.oAssignButton = new sap.m.Button({
             text: "Assignment",
             icon: "sap-icon://navigation-right-arrow",
-            iconFirst: false
+            iconFirst: false,
+            press: function() {
+                oController.router.navTo("assignment", {
+                    id: oController.oRouteArguments.id
+                });
+            }
         });
 
         this.oEditButton = new sap.m.Button({
@@ -60,7 +66,7 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.App", {
             contentRight: [
                 this.oEditButton,
                 this.oDeleteButton,
-                this.oActionButton,
+                this.oActionButton
             ]
         });
 

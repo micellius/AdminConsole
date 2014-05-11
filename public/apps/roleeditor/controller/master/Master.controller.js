@@ -8,6 +8,7 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
     onInit : function () {
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
         this.router.attachRoutePatternMatched(this._onRouteMatched, this);
+        this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
         this._loadData();
     },
 
@@ -28,12 +29,17 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
         this.loadDataPromise.done(function() {
             var oList = this.controller.getView().oList,
                 aItems = oList.getItems(),
-                i, id;
+                aSelectedItems = [],
+                i, sId, bSelected;
 
             for(i=0; i<aItems.length; i++) {
-                id = aItems[i].getCustomData()[0].getValue();
-                oList.setSelectedItem(aItems[i], this.ids.indexOf(id) >=0);
+                sId = aItems[i].getCustomData()[0].getValue();
+                bSelected = this.ids.indexOf(sId) >= 0;
+                oList.setSelectedItem(aItems[i], bSelected);
+                bSelected && aSelectedItems.push(aItems[i].getBindingContext().getObject());
             }
+
+            this.controller.oAppController.oEventBus.publish('selectRoles', aSelectedItems);
 
         }.bind({
             controller: this,
@@ -53,8 +59,7 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
 
     _loadData: function() {
 
-        var oAppController,
-            oModel,
+        var oModel,
             oParams,
             oHeaders,
             oDeferred;
@@ -71,9 +76,7 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
 
         this.getView().setModel(oModel);
 
-        oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
-
-        oAppController.getCsrfToken(function(csrfToken) {
+        this.oAppController.getCsrfToken(function(csrfToken) {
             oParams = JSON.stringify({
                 "absoluteFunctionName":"sap.hana.ide.core.base.server.getAllRoles",
                 "inputObject":{}

@@ -24,8 +24,9 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.master.Master", {
         this.oList.bindAggregation("items", {
             path: "/roles",
             factory: function(sId){
-                var oItem = new sap.m.StandardListItem(sId, {
+                return new sap.m.StandardListItem(sId, {
                     title: "{objectName}",
+                    tooltip: "{objectName}",
                     description: "{roleId}",
                     customData: [
                         new sap.ui.core.CustomData({
@@ -34,7 +35,6 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.master.Master", {
                         })
                     ]
                 });
-                return oItem;
             }
         });
 

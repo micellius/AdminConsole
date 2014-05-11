@@ -15,7 +15,7 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
         includes : [],
 
         dependencies : {
-            libs : [ "sap.m", "sap.ui.layout" ],
+            libs : [ "sap.m", "sap.ui.layout", "sap.ui.commons" ],
             components : []
         },
         routing : {
@@ -57,13 +57,11 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
         this.getRouter().initialize();
     },
     createContent : function () {
-        var oView = sap.ui.view({
+        return sap.ui.view({
             id: "roleEditorApp",
             viewName: "sap.adminconsole.apps.roleeditor.view.App",
             type: "JS",
             viewData: { component: this }
         });
-
-        return oView;
     }
 });

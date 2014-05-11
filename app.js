@@ -32,7 +32,13 @@ app.use(bodyParser());
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(session({secret: 'secret'}));
-app.use(stylus.middleware({ src: __dirname + '/public' }));
+app.use(stylus.middleware({
+    src: __dirname + '/public',
+    dest: __dirname + '/public',
+    compile: function(str) {
+        return stylus(str).set('compress', true);
+    }
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/resources', express.static(__dirname + '/bower_components/openui5-bower/resources')); // UI5
 

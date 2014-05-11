@@ -4,15 +4,17 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.detail.Detail", {
 		return "sap.adminconsole.apps.roleeditor.controller.detail.Detail";
 	},
 
-	createContent : function(oController) {
+	createContent : function() {
+
+        var view = this;
 
         this.oObjectHeader = new sap.m.ObjectHeader({
             condensed: true,
-            title: "Role A",
-            number: "16",
-            numberUnit: "Objects",
+            title: "{/headerTitle}",
+            number: "{/headerNumber}",
+            numberUnit: "{/headerUnit}",
             attributes: [new sap.m.ObjectAttribute({
-                text: "12345"
+                text: "{/headerDesctiption}"
             })]
         });
 
@@ -23,34 +25,52 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.detail.Detail", {
             }), new sap.m.Label({
                 text: "Role Name"
             }), new sap.m.Text({
-                text: "Role A"
+                text: "{/generalName}"
             }), new sap.m.Label({
                 text: "ID"
             }), new sap.m.Text({
-                text: "12345"
+                text: "{/generalId}"
             })]
+        });
+
+        this.oCollapseExpandButton = new sap.m.Button({
+            text: "Hide",
+            icon: "sap-icon://up",
+            iconFirst: false,
+            press: function() {
+                var collapsed = view.oProperties.hasStyleClass('collapsed');
+                if(collapsed) {
+                    view.oCollapseExpandButton.setIcon('sap-icon://up');
+                    view.oCollapseExpandButton.setText('Hide');
+                    view.oProperties.removeStyleClass('collapsed');
+                } else {
+                    view.oCollapseExpandButton.setIcon('sap-icon://down');
+                    view.oCollapseExpandButton.setText('Show');
+                    view.oProperties.addStyleClass('collapsed');
+                }
+            }
         });
 
         this.oProperties = new sap.m.Panel({
             headerToolbar: new sap.m.Toolbar({
-                content: [new sap.m.Label({
-                    text: "More Properties"
-                }), new sap.m.ToolbarSpacer(), new sap.m.Button({
-                    text: "Hide",
-                    icon: "sap-icon://up",
-                    iconFirst: false
-                })]
+                content: [
+                    new sap.m.Label({
+                        text: "More Properties"
+                    }),
+                    new sap.m.ToolbarSpacer(),
+                    this.oCollapseExpandButton
+                ]
             }),
             content: new sap.ui.layout.form.SimpleForm({
                 maxContainerCols: 2,
                 content: [new sap.m.Label({
                     text: "Role Mode"
                 }), new sap.m.Text({
-                    text: "LOCAL"
+                    text: "{/propertiesRoleMode}"
                 }), new sap.m.Label({
                     text: "Role Creator"
                 }), new sap.m.Text({
-                    text: "SYSTEM"
+                    text: "{/propertiesRoleCreator}"
                 })]
             })
         });

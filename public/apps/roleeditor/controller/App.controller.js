@@ -8,6 +8,7 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.App", {
 
     onInit : function () {
         this.getCsrfToken();
+        this.oEventBus = new sap.ui.core.EventBus();
     },
 
     getCsrfToken: function(callback) {

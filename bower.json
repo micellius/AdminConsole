@@ -1,0 +1,21 @@
+{
+  "name": "sap-fiori-admin-console",
+  "version": "0.0.1",
+  "authors": [
+    "Vadim Tomnikov <vadim.tomnikov@sap.com>"
+  ],
+  "description": "SAP Fiori Administration Console",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "openui5-bower": "saschakiefer/openui5-bower#master"
+  }
+}

@@ -60,8 +60,6 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
     _loadData: function() {
 
         var oModel,
-            oParams,
-            oHeaders,
             oDeferred;
 
         oDeferred = $.Deferred();
@@ -77,6 +75,9 @@ sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
         this.getView().setModel(oModel);
 
         this.oAppController.getCsrfToken(function(csrfToken) {
+            var oParams,
+                oHeaders;
+
             oParams = JSON.stringify({
                 "absoluteFunctionName":"sap.hana.ide.core.base.server.getAllRoles",
                 "inputObject":{}

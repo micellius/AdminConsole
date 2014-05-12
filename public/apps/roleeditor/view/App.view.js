@@ -34,7 +34,7 @@ sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.App", {
 
         this.oAssignButton = new sap.m.Button({
             text: "Assignment",
-            icon: "sap-icon://navigation-right-arrow",
+            icon: "sap-icon://slim-arrow-right",
             iconFirst: false,
             press: function() {
                 oController.router.navTo("assignment", {

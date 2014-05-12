@@ -29,7 +29,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.App", {
             if(!controller.csrfPromise) {
                 controller.csrfPromise = $.ajax({
                     type: "HEAD",
-                    url: "/sap/hana/ide/core/base/server/csrf.xsjs",
+                    url: "/sap/hana/xs/ide/editor/server/csrf.xsjs",
                     headers: {
                         "X-CSRF-Token": "Fetch"
                     }

@@ -42,18 +42,45 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
             icon: "sap-icon://synchronize"
         });
 
-        this.oSearchField = new sap.m.SearchField();
+        this.oSearchField = new sap.m.SearchField({
+            search: function(oEvent) {
+                oController.search(oEvent.getParameter('query'))
+            }
+        });
 
         this.oBar = new sap.m.Bar({
             contentMiddle: [this.oSearchField],
             contentRight: [this.oSynchronizeButton]
         });
 
+        this.oSettingsButton = new sap.m.Button({
+            icon: "sap-icon://settings"
+        });
+
+        this.oFilterButton = new sap.m.Button({
+            icon: "sap-icon://filter"
+        });
+
+        this.oSortButton = new sap.m.Button({
+            icon: "sap-icon://sort"
+        });
+
+        this.oAddButton = new sap.m.Button({
+            icon: "sap-icon://add"
+        });
+
         this.oPage = new sap.m.Page({
             title: "Roles",
             subHeader: this.oBar,
             content: [this.oList],
-            footer: new sap.m.Bar()
+            footer: new sap.m.Bar({
+                contentLeft: [
+                    this.oSettingsButton,
+                    this.oFilterButton,
+                    this.oSortButton,
+                    this.oAddButton
+                ]
+            })
         });
 
         this.oPage.bindProperty("title", "/roles", function(roles) {

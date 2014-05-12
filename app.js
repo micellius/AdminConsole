@@ -44,7 +44,7 @@ app.use('/resources', express.static(__dirname + '/bower_components/openui5-bowe
 
 app.get('/', routes.index);
 app.post('/sap/hana/ide/core/base/server/net.xsjs', net.post);
-app.head('/sap/hana/ide/core/base/server/csrf.xsjs', csrf.head);
+app.head('/sap/hana/xs/ide/editor/server/csrf.xsjs', csrf.head);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

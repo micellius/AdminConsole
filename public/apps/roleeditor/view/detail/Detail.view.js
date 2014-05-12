@@ -4,7 +4,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
 		return "tests.adminconsole.apps.RoleEditor.controller.detail.Detail";
 	},
 
-	createContent : function() {
+	createContent : function(oController) {
 
         var view = this;
 
@@ -82,13 +82,46 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
             })]
         });
 
+        this.oAssignButton = new sap.m.Button({
+            text: "Assignment",
+            icon: "sap-icon://slim-arrow-right",
+            iconFirst: false,
+            press: function() {
+                oController.router.navTo("assignment", {
+                    id: oController.oRouteArguments.id
+                });
+            }
+        });
+
+        this.oEditButton = new sap.m.Button({
+            text: "Edit"
+        });
+
+        this.oDeleteButton = new sap.m.Button({
+            text: "Delete"
+        });
+
+        this.oActionButton = new sap.m.Button({
+            icon: "sap-icon://action"
+        });
+
 		this.page = new sap.m.Page({
 			title: "Role",
 			content: [
                 this.oObjectHeader,
                 this.oIconTabBar,
                 this.oProperties
-            ]
+            ],
+            footer: new sap.m.Bar({
+                contentLeft: [
+                    this.oAssignButton
+                ],
+                contentRight: [
+                    this.oEditButton,
+                    this.oDeleteButton,
+                    this.oActionButton
+                ]
+            })
 		});
 
 		return this.page;

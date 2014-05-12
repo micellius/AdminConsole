@@ -25,6 +25,21 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
         id && this._selectItems(id.split(','));
     },
 
+    search: function(sText) {
+        var oList = this.getView().oList,
+            oBinding = oList.getBinding("items"),
+            oFilter;
+
+        if (oBinding) {
+            if (sText.length !== 0) {
+                oFilter = new sap.ui.model.Filter("objectName", sap.ui.model.FilterOperator.Contains, sText);
+                oBinding.filter([oFilter]);
+            } else {
+                oBinding.filter([]);
+            }
+        }
+    },
+
     _selectItems: function(ids) {
         this.loadDataPromise.done(function() {
             var oList = this.controller.getView().oList,

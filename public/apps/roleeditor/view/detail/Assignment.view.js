@@ -102,10 +102,15 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
 
         this.page = new sap.m.Page({
             title: "Role Assignment",
+            showNavButton: true,
+            navButtonPress: function() {
+                history.back();
+            },
             content: [
                 this.oObjectHeader,
                 this.oIconTabBar
-            ]
+            ],
+            footer: new sap.m.Bar({})
         });
 
         return this.page;

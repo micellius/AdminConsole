@@ -8,6 +8,15 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
 
         var view = this;
 
+        function not(sPath) {
+            return {
+                path: sPath,
+                formatter: function (bValue) {
+                    return !bValue;
+                }
+            };
+        }
+
         this.oObjectHeader = new sap.m.ObjectHeader({
             condensed: true,
             title: "{/headerTitle}",
@@ -83,6 +92,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
         });
 
         this.oAssignButton = new sap.m.Button({
+            visible: not("/editMode"),
             text: "Assignment",
             icon: "sap-icon://slim-arrow-right",
             iconFirst: false,
@@ -94,16 +104,64 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
         });
 
         this.oEditButton = new sap.m.Button({
-            text: "Edit"
+            visible: not("/editMode"),
+            text: "Edit",
+            press: function() {
+                view.getModel().setProperty("/editMode", true);
+            }
+        });
+
+        this.oDeleteDialog = new sap.m.Dialog({
+            content: [new sap.m.Text()],
+            beginButton: new sap.m.Button({
+                text: "Delete",
+                press: function() {
+                    view.oDeleteDialog.close();
+                }
+            }),
+            endButton: new sap.m.Button({
+                text: "Cancel",
+                press: function() {
+                    view.oDeleteDialog.close();
+                }
+            })
         });
 
         this.oDeleteButton = new sap.m.Button({
-            text: "Delete"
+            visible: not("/editMode"),
+            text: "Delete",
+            press: function() {
+                var data = this.getModel().getData();
+                view.oDeleteDialog.setTitle(data.deleteDialogTitle);
+                view.oDeleteDialog.getContent()[0].setText(data.deleteDialogText);
+                view.oDeleteDialog.open();
+            }
         });
 
         this.oActionButton = new sap.m.Button({
+            visible: not("/editMode"),
             icon: "sap-icon://action"
         });
+
+        this.oSaveButton = new sap.m.Button({
+            visible: "{/editMode}",
+            text: "Save",
+            press: function() {
+                view.getModel().setProperty("/editMode", false);
+            }
+        });
+
+        this.oSaveButton.setVisible(false);
+
+        this.oCancelButton = new sap.m.Button({
+            visible: "{/editMode}",
+            text: "Cancel",
+            press: function() {
+                view.getModel().setProperty("/editMode", false);
+            }
+        });
+
+        this.oCancelButton.setVisible(false);
 
 		this.page = new sap.m.Page({
 			title: "Role",
@@ -119,7 +177,9 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
                 contentRight: [
                     this.oEditButton,
                     this.oDeleteButton,
-                    this.oActionButton
+                    this.oActionButton,
+                    this.oSaveButton,
+                    this.oCancelButton
                 ]
             })
 		});

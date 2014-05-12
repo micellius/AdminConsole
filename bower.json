@@ -2,11 +2,11 @@
   "name": "sap-fiori-admin-console",
   "version": "0.0.1",
   "authors": [
-    "Vadim Tomnikov <micellius@gmail.com>"
+    "Vadim Tomnikov"
   ],
   "description": "SAP Fiori Administration Console",
   "main": "app.js",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": true,
   "ignore": [
     "**/.*",

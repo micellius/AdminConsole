@@ -22,5 +22,5 @@
   "devDependencies": {
     "bower": "1.3.x"
   },
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

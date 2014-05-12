@@ -40,6 +40,21 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
         }
     },
 
+    sort: function() {
+        var oModel = this.getView().getModel(),
+            sSortingOrder = oModel.getProperty("/sortingOrder") === "ASC" ? "DESC" : "ASC",
+            oList = this.getView().oList,
+            oBinding = oList.getBinding("items"),
+            oSorter;
+
+        oModel.setProperty("/sortingOrder", sSortingOrder);
+
+        if(oBinding) {
+            oSorter = new sap.ui.model.Sorter("objectName", sSortingOrder === "DESC");
+            oBinding.sort([oSorter]);
+        }
+    },
+
     _selectItems: function(ids) {
         this.loadDataPromise.done(function() {
             var oList = this.controller.getView().oList,

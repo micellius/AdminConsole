@@ -62,7 +62,10 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
         });
 
         this.oSortButton = new sap.m.Button({
-            icon: "sap-icon://sort"
+            icon: "sap-icon://sort",
+            press: function() {
+                oController.sort()
+            }
         });
 
         this.oAddButton = new sap.m.Button({

@@ -1,7 +1,7 @@
 /**
  * Created by vadimto on 10.05.14.
  */
-sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.detail.Assignment", {
+sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignment", {
 
     onInit: function() {
         this.router = sap.ui.core.UIComponent.getRouterFor(this);

@@ -4,7 +4,7 @@
  * Date: 5/8/14
  * Time: 1:50 PM
  */
-sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.detail.Detail", {
+sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail", {
 
     onInit: function() {
         this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();

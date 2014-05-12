@@ -1,0 +1,8 @@
+.sapMPanel .sapMTB{
+    background-color:#fff;
+}
+.sapMPanel.collapsed .sapMPanelContent{
+    height:0;
+    padding:0;
+    overflow:hidden;
+}

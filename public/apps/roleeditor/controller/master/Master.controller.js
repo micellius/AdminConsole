@@ -4,7 +4,7 @@
  * Date: 5/8/14
  * Time: 1:50 PM
  */
-sap.ui.controller("sap.adminconsole.apps.roleeditor.controller.master.Master", {
+sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master", {
     onInit : function () {
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
         this.router.attachRoutePatternMatched(this._onRouteMatched, this);

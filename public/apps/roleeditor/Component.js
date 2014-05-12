@@ -5,14 +5,14 @@
  * Time: 1:26 PM
  */
 jQuery.sap.require("sap.ui.core.UIComponent");
-jQuery.sap.declare("sap.adminconsole.apps.roleeditor.Component");
+jQuery.sap.declare("tests.adminconsole.apps.RoleEditor.Component");
 
-sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
+sap.ui.core.UIComponent.extend("tests.adminconsole.apps.RoleEditor.Component", {
     metadata : {
         version : "@version@",
 
-        library : "sap.adminconsole.apps.roleeditor",
-        includes : [],
+        library : "tests.adminconsole.apps.RoleEditor",
+        includes : [ "styles/style.css" ],
 
         dependencies : {
             libs : [ "sap.m", "sap.ui.layout", "sap.ui.commons" ],
@@ -21,7 +21,7 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
         routing : {
             config : {
                 viewType : "JS",
-                viewPath : "sap.adminconsole.apps.roleeditor.view",
+                viewPath : "tests.adminconsole.apps.RoleEditor.view",
                 targetControl : "splitControl",
                 clearTarget : false
             },
@@ -29,13 +29,13 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
                 {
                     pattern: "",
                     name: "empty",
-                    viewPath: "sap.adminconsole.apps.roleeditor.view.master",
+                    viewPath: "tests.adminconsole.apps.RoleEditor.view.master",
                     view: "Master",
                     targetAggregation: "masterPages"
                 }, {
                     pattern: "roles/:id:",
                     name: "master",
-                    viewPath: "sap.adminconsole.apps.roleeditor.view.master",
+                    viewPath: "tests.adminconsole.apps.RoleEditor.view.master",
                     view: "Master",
                     targetAggregation: "masterPages",
                     subroutes: [
@@ -43,13 +43,13 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
                             pattern: "roles/:id:",
                             name: "detail",
                             view: "Detail",
-                            viewPath: "sap.adminconsole.apps.roleeditor.view.detail",
+                            viewPath: "tests.adminconsole.apps.RoleEditor.view.detail",
                             targetAggregation: "detailPages"
                         }, {
                             pattern: "roles/{id}/assignment",
                             name: "assignment",
                             view: "Assignment",
-                            viewPath: "sap.adminconsole.apps.roleeditor.view.detail",
+                            viewPath: "tests.adminconsole.apps.RoleEditor.view.detail",
                             targetAggregation: "detailPages"
                         }
                     ]
@@ -69,7 +69,7 @@ sap.ui.core.UIComponent.extend("sap.adminconsole.apps.roleeditor.Component", {
     createContent : function () {
         return sap.ui.view({
             id: "roleEditorApp",
-            viewName: "sap.adminconsole.apps.roleeditor.view.App",
+            viewName: "tests.adminconsole.apps.RoleEditor.view.App",
             type: "JS",
             viewData: { component: this }
         });

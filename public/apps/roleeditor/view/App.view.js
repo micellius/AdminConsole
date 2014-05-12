@@ -4,10 +4,10 @@
  * Date: 5/8/14
  * Time: 1:42 PM
  */
-sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.App", {
+sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.App", {
 
     getControllerName: function() {
-        return "sap.adminconsole.apps.roleeditor.controller.App";
+        return "tests.adminconsole.apps.RoleEditor.controller.App";
     },
 
     createContent: function(oController) {

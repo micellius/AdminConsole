@@ -1,7 +1,7 @@
-sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.detail.Detail", {
+sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
 
 	getControllerName: function() {
-		return "sap.adminconsole.apps.roleeditor.controller.detail.Detail";
+		return "tests.adminconsole.apps.RoleEditor.controller.detail.Detail";
 	},
 
 	createContent : function() {

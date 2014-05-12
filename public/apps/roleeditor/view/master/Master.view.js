@@ -1,6 +1,6 @@
-sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.master.Master", {
+sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
 	getControllerName: function() {
-		return "sap.adminconsole.apps.roleeditor.controller.master.Master";
+		return "tests.adminconsole.apps.RoleEditor.controller.master.Master";
 	},
 	createContent : function(oController) {
         var oList;

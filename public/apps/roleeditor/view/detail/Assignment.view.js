@@ -1,10 +1,10 @@
 /**
  * Created by vadimto on 10.05.14.
  */
-sap.ui.jsview("sap.adminconsole.apps.roleeditor.view.detail.Assignment", {
+sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
 
     getControllerName: function () {
-        return "sap.adminconsole.apps.roleeditor.controller.detail.Assignment";
+        return "tests.adminconsole.apps.RoleEditor.controller.detail.Assignment";
     },
 
     createContent: function () {

@@ -42,7 +42,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
 
     sort: function() {
         var oModel = this.getView().getModel(),
-            sSortingOrder = oModel.getProperty("/sortingOrder") === "ASC" ? "DESC" : "ASC",
+            sSortingOrder = oModel.getProperty("/sortingOrder") === "DESC" ? "ASC" : "DESC",
             oList = this.getView().oList,
             oBinding = oList.getBinding("items"),
             oSorter;

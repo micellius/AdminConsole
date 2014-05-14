@@ -469,7 +469,7 @@ function getSystemPrivilegesByGrantee(opts) {
     };
 }
 
-function getPrivilegesByGrantee(opts) {
+function getPrivilegesByGrantee() {
     return {
         "privileges":[
             {
@@ -492,7 +492,7 @@ function getPrivilegesByGrantee(opts) {
     };
 }
 
-function getDetailedPrivilegesByGrantee(opts) {
+function getDetailedPrivilegesByGrantee (opts) {
     return {
         "detailedPrivileges":[
             {
@@ -504,6 +504,673 @@ function getDetailedPrivilegesByGrantee(opts) {
                 "schemaName":"SYSTEM",
                 "state":"edit",
                 "objectId":"AFLPM_CREATOR-SYSTEM-EXECUTE"
+            }
+        ]
+    };
+}
+
+function getSqlObjects() {
+    return {
+        "objects": [
+            {
+                "objectName": "SAPDBCC",
+                "schemaName": "SAPDBCC",
+                "type": "SCHEMA"
+            },
+            {
+                "objectName": "SAP_HANA_ADMIN",
+                "schemaName": "_SYS_REPO",
+                "type": "SCHEMA"
+            },
+            {
+                "objectName": "SAP_HANA_DBCC",
+                "schemaName": "_SYS_REPO",
+                "type": "SCHEMA"
+            },
+            {
+                "objectName": "SAP_XS_LM",
+                "schemaName": "_SYS_REPO",
+                "type": "SCHEMA"
+            },
+            {
+                "objectName": "sap.hana.admin.dbcc\/APCA_GET",
+                "schemaName": "_SYS_BIC",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.admin.dbcc\/APCA_GET\/tabletype\/tt_apca_data",
+                "schemaName": "_SYS_BIC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds\/RESOURCE_INFORMATION_PROC",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::ALLOCATORS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::ALLOCATORS_HISTORY",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::ALLOCATORS_PIE",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::ALLOCATOR_HISTORY",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::COMPONENTS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::COMPONENTS_PIE",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::COMPONENT_ALLOCATOR_HISTORY",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::COMPONENT_HISTORY",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::DEMO_ALERTS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::DEMO_BLOCKED_TRANSACTIONS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::DEMO_CONNECTIONS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::DEMO_EXPENSIVE_STATEMENTS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::DEMO_SERVICE_THREADS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::FEATURES",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::HOSTS",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::HOST_INFORMATION",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::MEMORY_OVERVIEW",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::RESOURCE_INFORMATION",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::RESOURCE_INFORMATION_IN",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::RESOURCE_INFORMATION_OUT",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::SERVICES",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::SERVICE_MEMORY",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.admin.ds::SYS_TIMESTAMP",
+                "schemaName": "SAP_HANA_ADMIN",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::AuthMechId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::AuthMechParamId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::GroupId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::LPGroupId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::LPTileId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::MsgClientId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::MsgQueueId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::ResAPCAId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::ResConfigId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::ResourceId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::ResourceTypeId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data.seq::ResourceURLId",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_AUTH_MECHS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_AUTH_MECH_PARAMS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_GROUPS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_GROUP_RESOURCES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_LP_GROUPS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_LP_TILES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_RESOURCES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::APP_RESOURCE_TYPES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::AUTH_MECHS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::AUTH_MECH_PARAMS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::DATASOURCES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::GROUPS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LOCALIZED_TEXT",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LP_CATALOG_ITEMS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LP_GROUPS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LP_TILES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LP_TILE_GRP_ASSOC",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::LP_TILE_TYPES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::MSG_CLIENT",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::MSG_CLIENT_MESSAGES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::MSG_GENERAL_MESSAGES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::MSG_QUEUE",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RESOURCES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RESOURCE_TYPES",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RESOURCE_URLS",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RES_APCA",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RES_CONFIG",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.dbcc.data::RES_GRP_ASSOC",
+                "schemaName": "SAP_HANA_DBCC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/ADD_UPDATE_USER_PAGE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/ADD_UPDATE_USER_PROPERTY",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/ADD_UPDATE_USER_SITE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/ADD_UPDATE_USER_WIDGET",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/ADD_UPDATE_USER_WIDGET\/tabletype\/GET_APPSITE_WIDGET_TEMPLATES",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/CLONE_PAGE_TO_USER_PAGE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/DELETE_USER_APPSITE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/DELETE_USER_PAGE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/DELETE_USER_PROPERTY",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/DELETE_USER_WIDGET",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization\/RECREATE_USER_APPSITE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization::TEMP_USER_PAGES",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization::TEMP_USER_PROPERTIES",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization::TEMP_USER_WIDGETS",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.personalization::TEMP_USER_WIDGET_PROPERTIES",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db.tabletypes::GET_SITE_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_APPSITE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_APPSITE\/tabletype\/GET_APPSITE_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_APPSITE_V2\/tabletype\/GET_APPSITE_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_APPSITE_V3",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_APPSITE_V3\/tabletype\/GET_APPSITE_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_NAVIGATION_TARGET_DATA",
+                "schemaName": "_SYS_BIC",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_NAVIGATION_TARGET_DATA\/proc",
+                "schemaName": "_SYS_BIC",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_NAVIGATION_TARGET_DATA\/proc\/tabletype\/VAR_OUT",
+                "schemaName": "_SYS_BIC",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_NAVIGATION_URL",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_NAVIGATION_URL\/tabletype\/NAV_TARGETS_DATA_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_WIDGET_DATA",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_WIDGET_DATA\/tabletype\/WIDGET_DATA_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/GET_WIDGET_DATA\/tabletype\/WIDGET_USER_PROPERTIES_TABLE_TYPE",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/LOG_AUDIT_MESSAGE",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db\/SET_USER_WIDGET_PROPERTIES",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::GET_SITE_V2",
+                "schemaName": "UIS",
+                "type": "PROCEDURE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::INTENT_ALIAS_MAPPING_V2",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::NAVIGATION_TARGET",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::NAVIGATION_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::SEMANTIC_OBJECTS",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::SEMANTIC_OBJECT_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::THEMES",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_APPSITES_DATA_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_APPSITES_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_CATALOGS",
+                "schemaName": "UIS",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_CATALOGS_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_FIORI_CATALOGS_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_PAGES_NAV_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_SITES_NAV_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_WIDGETS_NAV_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_WIDGETS_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_WIDGET_TEMPLATES_PROPERTIES_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.uis.db::UIS_WIDGET_TEMPLATES_VIEW",
+                "schemaName": "UIS",
+                "type": "VIEW"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::ACTION_LOG",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::CONFIGURATION",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::CONF_HISTORY",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::ID_SEQ",
+                "schemaName": "SAP_XS_LM",
+                "type": "SEQUENCE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::IMPORTED_DU",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::LOG_SYNC",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::PROCESS",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::SYSTEM",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::SYSTEM_STATE",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::TRANSPORTED_CHANGE",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::TRANSPORT_CONTENT",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::TRANSPORT_ROUTE",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
+            },
+            {
+                "objectName": "sap.hana.xs.lm.db::TRANSPORT_ROUTE_DU",
+                "schemaName": "SAP_XS_LM",
+                "type": "TABLE"
             }
         ]
     };
@@ -529,6 +1196,9 @@ exports.post = function(req, res){
             break;
         case 'sap.hana.ide.core.base.server.getDetailedPrivilegesByGrantee':
             res.json(getDetailedPrivilegesByGrantee(req.body.inputObject));
+            break;
+        case 'sap.hana.ide.core.base.server.getSqlObjects':
+            res.json(getSqlObjects(req.body.inputObject));
             break;
     }
 };

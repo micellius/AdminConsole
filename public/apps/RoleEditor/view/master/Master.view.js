@@ -3,19 +3,19 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
 		return "tests.adminconsole.apps.RoleEditor.controller.master.Master";
 	},
 	createContent : function(oController) {
-        var oList;
 
         // Workaround for UI5 bug - itemPress event never fired
         $(document).on('click', '.sapMLIB.sapMSLI.sapMLIBTypeInactive', function(evt) {
             var isCheckBox = ($(evt.target).closest('.sapMCbMark').length > 0),
-                oItem = sap.ui.getCore().byId($(this).closest('li').attr('id'));
+                oItem = sap.ui.getCore().byId($(this).closest('li').attr('id')),
+                oList = sap.ui.getCore().byId($(this).closest('ul').parent().attr('id'));
 
             if(!isCheckBox) {
                 oList._onItemPressed(oItem, {});
             }
         });
 
-        oList = this.oList = new sap.m.List({
+        this.oList = new sap.m.List({
             mode: sap.m.ListMode.MultiSelect,
             select: [oController.onListSelect, oController],
             itemPress: [oController.onListItemPress, oController]

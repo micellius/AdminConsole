@@ -5,71 +5,104 @@ jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.Privileges");
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignment", {
 
     onInit: function() {
+        var oController = this;
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
+        this.router.attachRouteMatched(function(oEvent) {
+            // Remember old arguments to avoid redundant ajax calls
+            oController.oOldRouteArguments = oController.oRouteArguments;
+            oController.oRouteArguments = oEvent.getParameters().arguments;
+        });
         this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
         this.oAppController.oEventBus.subscribe('selectRoles', function () {
             var aRoles = arguments[2],
                 oRole,
                 oData,
-                oView = this.getView();
+                oView = this.getView(),
+                loadedTabsCouter = 0;
 
-            oRole = aRoles[0];
-            oData = {
-                headerTitle: oRole.objectName,
-                headerDesctiption: oRole.roleId
-            };
+            function onTabLoaded() {
+                var sTab = oController.oRouteArguments.tab || 'roles';
 
-            oView.setModel(new sap.ui.model.json.JSONModel(oData));
-
-            // Granted Roles
-            this._loadData(oView.oTableRoles, {
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getRolesByGrantee",
-                "inputObject":{
-                    "grantee": oRole.objectName
+                loadedTabsCouter++;
+                if(loadedTabsCouter === 5) {
+                    oView.oIconTabBar.setSelectedKey(sTab);
                 }
-            });
+            }
 
-            this.loadDataPromise.done(function(data) {
-                oView.getModel().setProperty('/headerNumber', data.roles.length);
-                oView.getModel().setProperty('/headerUnit', data.roles.length === 1 ? "Object" : "Objects");
-            });
+            if(!oController.oOldRouteArguments ||
+                oController.oOldRouteArguments.id !== oController.oRouteArguments.id
+            ) {
 
-            // System Privileges
-            this._loadData(oView.oTableSystem, {
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee",
-                "inputObject":{
-                    "grantee": oRole.objectName
+                this.oRole = oRole = aRoles[0];
+                oData = {
+                    headerTitle: oRole.objectName,
+                    headerDesctiption: oRole.roleId
+                };
+
+                oView.setModel(new sap.ui.model.json.JSONModel(oData));
+
+                // Granted Roles
+                this._loadData(oView.oTableRoles, {
+                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getRolesByGrantee",
+                    "inputObject": {
+                        "grantee": oRole.objectName
+                    }
+                }).done(onTabLoaded);
+
+                // System Privileges
+                this._loadData(oView.oTableSystem, {
+                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee",
+                    "inputObject": {
+                        "grantee": oRole.objectName
+                    }
+                }).done(onTabLoaded);
+
+                // SQL Privileges
+                this._loadData(oView.oTableSql, {
+                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                    "inputObject": {
+                        "grantee": oRole.objectName,
+                        "type": "object"
+                    }
+                }).done(onTabLoaded);
+
+                // Package
+                this._loadData(oView.oTablePackage, {
+                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                    "inputObject": {
+                        "grantee": oRole.objectName,
+                        "type": "package"
+                    }
+                }).done(onTabLoaded);
+
+                // Application
+                this._loadData(oView.oTableApplication, {
+                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                    "inputObject": {
+                        "grantee": oRole.objectName,
+                        "type": "application"
+                    }
+                }).done(onTabLoaded);
+
+            } else {
+                if(oView.oIconTabBar.getSelectedKey() !== oController.oRouteArguments.tab) {
+                    // Synch URL -> tab
+                    oView.oIconTabBar.setSelectedKey(oController.oRouteArguments.tab);
                 }
-            });
-
-            // SQL Privileges
-            this._loadData(oView.oTableSql, {
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                "inputObject":{
-                    "grantee": oRole.objectName,
-                    "type": "object"
-                }
-            });
-
-            // Package
-            this._loadData(oView.oTablePackage, {
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                "inputObject":{
-                    "grantee": oRole.objectName,
-                    "type": "package"
-                }
-            });
-
-            // Application
-            this._loadData(oView.oTableApplication, {
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                "inputObject":{
-                    "grantee": oRole.objectName,
-                    "type": "application"
-                }
-            });
+            }
 
         }, this);
+    },
+
+    onIconBarSelect: function(oEvent) {
+        var oModel = this.getView().getModel(),
+            numberOfItems = oEvent.getParameter('selectedItem').getContent()[0].getItems().length;
+        this.router.navTo('assignment', {
+            id: this.oRouteArguments.id,
+            tab: this.getView().oIconTabBar.getSelectedKey()
+        });
+        oModel.setProperty('/headerNumber', numberOfItems);
+        oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
     },
 
     search: function(oTable, sText) {
@@ -88,12 +121,21 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
     openPopover: function(oItem) {
         var Privileges = tests.adminconsole.apps.RoleEditor.utils.Privileges,
-            oData = oItem.getBindingContext().getObject();
+            oData = oItem.getBindingContext().getObject(),
+            oView = this.getView(),
+            oModel;
 
-        this.getView().oPopover.setModel(new sap.ui.model.json.JSONModel({
+        oView.oPopover.setModel(oModel = new sap.ui.model.json.JSONModel({
+            title: oData.objectName,
+            editMode: oView.getModel().getProperty('/editMode'),
             detailedPrivileges: Privileges.getDefaultPrivilegesByObjectType(oData.objectType)
         }));
-        this.getView().oPopover.openBy(oItem);
+
+        this._loadDetailedPrivileges(oModel, oData, this.oRole.objectName).done(function() {
+            oView.oPopover.openBy(oItem);
+        });
+
+
     },
 
     toggleEditMode: function() {
@@ -112,28 +154,42 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         oView.oTableApplication.getModel().setProperty('/editMode', bMode);
     },
 
-    openAddDialog: function() {
-        var oView = this.getView(),
-            oModel = new sap.ui.model.json.JSONModel();
+    openAddDialog: function(opts) {
+        var oModel = new sap.ui.model.json.JSONModel({
+                opts: opts
+            }),
+            oDialog = this.getView().oAddDialog;
 
-        oView.oAddDialog.setModel(oModel);
-        oView.oAddDialog.open();
+        oDialog.unbindAggregation('items');
+        oDialog.bindAggregation('items', {
+            path: opts.addSearchRoot,
+            factory: function(sId) {
+                return new sap.m.ColumnListItem(sId, {
+                    cells: [new sap.m.Text({
+                        text: '{'+opts.addSearchName+'}'
+                    })]
+                });
+            }
+        });
+        oDialog.setModel(oModel);
+        oDialog.open();
     },
 
     addDialogSearch: function(sText) {
         var oView = this.getView(),
-            oModel = oView.oAddDialog.getModel();
+            oModel = oView.oAddDialog.getModel(),
+            opts = oModel.getData().opts;
 
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
                 oHeaders;
 
-            oParams = JSON.stringify({
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getSqlObjects",
-                "inputObject":{
-                    "objectName": sText
-                }
-            });
+            oParams = {
+                "absoluteFunctionName": opts.addSearchFunction,
+                "inputObject":{}
+            };
+            oParams.inputObject[opts.addSearchName] = sText;
+            oParams = JSON.stringify(oParams);
 
             oHeaders = {
                 "X-CSRF-Token": csrfToken,
@@ -163,8 +219,6 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
         oDeferred = $.Deferred();
 
-        this.loadDataPromise = oDeferred.promise();
-
         component.setModel(oModel = new sap.ui.model.json.JSONModel());
 
         oModel.attachRequestCompleted(function() {
@@ -193,6 +247,69 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                 oHeaders                                    // request headers
             );
         });
+
+        return oDeferred.promise();
+    },
+
+    _loadDetailedPrivileges: function(oTargetModel, oData, sRoleName) {
+        var oModel,
+            oDeferred;
+
+        oDeferred = $.Deferred();
+
+        oModel = new sap.ui.model.json.JSONModel();
+
+        oModel.attachRequestCompleted(function() {
+            var i, l,
+                detailedPrivileges = oModel.getData().detailedPrivileges,
+                privilegesMap = {},
+                privilege;
+
+            for(i=0, l=detailedPrivileges.length; i<l; i++) {
+                privilegesMap[detailedPrivileges[i].privilege] = detailedPrivileges[i];
+            }
+
+            detailedPrivileges = oTargetModel.getData().detailedPrivileges; // Reuse detailedPrivileges
+            for(i=0, l=detailedPrivileges.length; i<l; i++) {
+                privilege = detailedPrivileges[i].privilege;
+                detailedPrivileges[i] = privilegesMap[privilege] || detailedPrivileges[i];
+            }
+            oTargetModel.refresh(true);
+
+            oDeferred.resolve(oModel.getData());
+        }, this);
+
+        this.oAppController.getCsrfToken(function(csrfToken) {
+            var oParams,
+                oHeaders;
+
+            oParams = JSON.stringify({
+                absoluteFunctionName: "sap.hana.ide.core.base.server.getDetailedPrivilegesByGrantee",
+                inputObject: {
+                    grantee: sRoleName,
+                    objectName: oData.objectName,
+                    objectType: oData.objectType
+                }
+            });
+
+            oHeaders = {
+                "X-CSRF-Token": csrfToken,
+                "x-sap-dont-debug": 1,
+                "Content-Type": "application/json"
+            };
+
+            oModel.loadData(
+                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                oParams,                                    // parameters map
+                true,                                       // async
+                "POST",                                     // method
+                true,                                       // merge
+                false,                                      // cache
+                oHeaders                                    // request headers
+            );
+        });
+
+        return oDeferred.promise();
     }
 
 });

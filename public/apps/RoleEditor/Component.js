@@ -52,7 +52,7 @@ sap.ui.core.UIComponent.extend("tests.adminconsole.apps.RoleEditor.Component", {
                             viewPath: "tests.adminconsole.apps.RoleEditor.view.detail",
                             targetAggregation: "detailPages"
                         }, {
-                            pattern: "roles/{id}/assignment",
+                            pattern: "roles/{id}/assignment/:tab:",
                             name: "assignment",
                             view: "Assignment",
                             viewPath: "tests.adminconsole.apps.RoleEditor.view.detail",

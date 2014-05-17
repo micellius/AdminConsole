@@ -502,7 +502,7 @@ function getDetailedPrivilegesByGrantee (opts) {
                 "privilege":"EXECUTE",
                 "grantor":"SYSTEM",
                 "objectType":opts.objectType,
-                "isGrantable":"FALSE",
+                "isGrantable":"TRUE",
                 "schemaName":"SYSTEM",
                 "state":"edit",
                 "objectId":"AFLPM_CREATOR-SYSTEM-EXECUTE"
@@ -1219,6 +1219,638 @@ function deleteRole(opts) {
     }
 }
 
+function getSystemPrivileges(opts) {
+    return {
+        "systems": [
+            {
+                "sysName": "AUDIT ADMIN",
+                "objectName": "AUDIT ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "AUDIT OPERATOR",
+                "objectName": "AUDIT OPERATOR",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "BACKUP ADMIN",
+                "objectName": "BACKUP ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "BACKUP OPERATOR",
+                "objectName": "BACKUP OPERATOR",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CATALOG READ",
+                "objectName": "CATALOG READ",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREATE R SCRIPT",
+                "objectName": "CREATE R SCRIPT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREATE REMOTE SOURCE",
+                "objectName": "CREATE REMOTE SOURCE",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREATE SCENARIO",
+                "objectName": "CREATE SCENARIO",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREATE SCHEMA",
+                "objectName": "CREATE SCHEMA",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREATE STRUCTURED PRIVILEGE",
+                "objectName": "CREATE STRUCTURED PRIVILEGE",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "CREDENTIAL ADMIN",
+                "objectName": "CREDENTIAL ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "DATA ADMIN",
+                "objectName": "DATA ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "DEVELOPMENT",
+                "objectName": "DEVELOPMENT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "EXPORT",
+                "objectName": "EXPORT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "IMPORT",
+                "objectName": "IMPORT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "INIFILE ADMIN",
+                "objectName": "INIFILE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "LICENSE ADMIN",
+                "objectName": "LICENSE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "LOG ADMIN",
+                "objectName": "LOG ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "MONITOR ADMIN",
+                "objectName": "MONITOR ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "OPTIMIZER ADMIN",
+                "objectName": "OPTIMIZER ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.CONFIGURE",
+                "objectName": "REPO.CONFIGURE",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.EXPORT",
+                "objectName": "REPO.EXPORT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.IMPORT",
+                "objectName": "REPO.IMPORT",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.MAINTAIN_DELIVERY_UNITS",
+                "objectName": "REPO.MAINTAIN_DELIVERY_UNITS",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.MODIFY_CHANGE",
+                "objectName": "REPO.MODIFY_CHANGE",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.MODIFY_FOREIGN_CONTRIBUTION",
+                "objectName": "REPO.MODIFY_FOREIGN_CONTRIBUTION",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.MODIFY_OWN_CONTRIBUTION",
+                "objectName": "REPO.MODIFY_OWN_CONTRIBUTION",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "REPO.WORK_IN_FOREIGN_WORKSPACE",
+                "objectName": "REPO.WORK_IN_FOREIGN_WORKSPACE",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "RESOURCE ADMIN",
+                "objectName": "RESOURCE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "ROLE ADMIN",
+                "objectName": "ROLE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "SAVEPOINT ADMIN",
+                "objectName": "SAVEPOINT ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "SCENARIO ADMIN",
+                "objectName": "SCENARIO ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "SERVICE ADMIN",
+                "objectName": "SERVICE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "SESSION ADMIN",
+                "objectName": "SESSION ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "STRUCTUREDPRIVILEGE ADMIN",
+                "objectName": "STRUCTUREDPRIVILEGE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "TENANT ADMIN",
+                "objectName": "TENANT ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "TRACE ADMIN",
+                "objectName": "TRACE ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "TRUST ADMIN",
+                "objectName": "TRUST ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "USER ADMIN",
+                "objectName": "USER ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            },
+            {
+                "sysName": "VERSION ADMIN",
+                "objectName": "VERSION ADMIN",
+                "type": "SYSTEMPRIVILEGE"
+            }
+        ]
+    };
+}
+
+function getPackages(opts) {
+    return {
+        "packageInfos": [
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.apps",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.content",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.db",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.odata",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.server",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.server.lib",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.ushell",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.ushell.adapters",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.ushell.bootstrap",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            },
+            {
+                "tenantID": "",
+                "packageName": "sap.hana.adminconsole.ushell.shells",
+                "srcSystem": "R72",
+                "srcTenant": "",
+                "description": "",
+                "responsible": "SAP",
+                "originalLanguage": "en_US",
+                "structural": false,
+                "deliveryUnit": "ADMIN_CONSOLE",
+                "vendor": "sap.com",
+                "textCollection": "",
+                "textStatus": "",
+                "textTerminologyDomain": "",
+                "hintsForTranslation": ""
+            }
+        ]
+    };
+}
+
+function getApplicationPrivileges() {
+    return {
+        "apps": [
+            {
+                "appName": "sap.bi.admin.catalog::WidgetAccess:AdminExtensions",
+                "objectName": "sap.bi.admin.catalog::WidgetAccess:AdminExtensions",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.admin.uis::AppSiteAccess:monitoring",
+                "objectName": "sap.hana.admin.uis::AppSiteAccess:monitoring",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.admin.uis::WidgetAccess:monitoring",
+                "objectName": "sap.hana.admin.uis::WidgetAccess:monitoring",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.adminconsole.content::AppSiteAccess",
+                "objectName": "sap.hana.adminconsole.content::AppSiteAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.adminconsole.content::WidgetAccess",
+                "objectName": "sap.hana.adminconsole.content::WidgetAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.dbcc::Admin",
+                "objectName": "sap.hana.dbcc::Admin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.dbcc::AppSiteAccess:dbccuis",
+                "objectName": "sap.hana.dbcc::AppSiteAccess:dbccuis",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.dbcc::Basic",
+                "objectName": "sap.hana.dbcc::Basic",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.dbcc::Monitoring",
+                "objectName": "sap.hana.dbcc::Monitoring",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.dbcc::WidgetAccess:catalog",
+                "objectName": "sap.hana.dbcc::WidgetAccess:catalog",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.ide.core::Consume",
+                "objectName": "sap.hana.ide.core::Consume",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.content.AdminConsole::AppSiteAccess",
+                "objectName": "sap.hana.uis.content.AdminConsole::AppSiteAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.content.AdminConsole::WidgetAccess",
+                "objectName": "sap.hana.uis.content.AdminConsole::WidgetAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.content.hanahome::AppSiteAccess:HANAHomePage",
+                "objectName": "sap.hana.uis.content.hanahome::AppSiteAccess:HANAHomePage",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.content.hanahome::WidgetAccess:HANADocumentationCatalog",
+                "objectName": "sap.hana.uis.content.hanahome::WidgetAccess:HANADocumentationCatalog",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.content.hanahome::WidgetAccess:HANAToolsCatalog",
+                "objectName": "sap.hana.uis.content.hanahome::WidgetAccess:HANAToolsCatalog",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.privileges::AppSiteAccess:All",
+                "objectName": "sap.hana.uis.privileges::AppSiteAccess:All",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.privileges::CatalogAccess:All",
+                "objectName": "sap.hana.uis.privileges::CatalogAccess:All",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uis.privileges::WidgetAccess:All",
+                "objectName": "sap.hana.uis.privileges::WidgetAccess:All",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uiscontent.FioriOnHana::AppSiteAccess",
+                "objectName": "sap.hana.uiscontent.FioriOnHana::AppSiteAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.uiscontent.HANALaunch::AppSiteAccess",
+                "objectName": "sap.hana.uiscontent.HANALaunch::AppSiteAccess",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::HTTPDestAdmin",
+                "objectName": "sap.hana.xs.admin::HTTPDestAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::HTTPDestView",
+                "objectName": "sap.hana.xs.admin::HTTPDestView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::JobAdmin",
+                "objectName": "sap.hana.xs.admin::JobAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::JobView",
+                "objectName": "sap.hana.xs.admin::JobView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::RuntimeConfAdmin",
+                "objectName": "sap.hana.xs.admin::RuntimeConfAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::RuntimeConfView",
+                "objectName": "sap.hana.xs.admin::RuntimeConfView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::SAMLAdmin",
+                "objectName": "sap.hana.xs.admin::SAMLAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::SAMLView",
+                "objectName": "sap.hana.xs.admin::SAMLView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::SQLCCAdmin",
+                "objectName": "sap.hana.xs.admin::SQLCCAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::SQLCCView",
+                "objectName": "sap.hana.xs.admin::SQLCCView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::TrustStoreAdmin",
+                "objectName": "sap.hana.xs.admin::TrustStoreAdmin",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.admin::TrustStoreView",
+                "objectName": "sap.hana.xs.admin::TrustStoreView",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.debugger::Debugger",
+                "objectName": "sap.hana.xs.debugger::Debugger",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.ide::Catalog",
+                "objectName": "sap.hana.xs.ide::Catalog",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.ide::Editor",
+                "objectName": "sap.hana.xs.ide::Editor",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.ide::LandingPage",
+                "objectName": "sap.hana.xs.ide::LandingPage",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.ide::Security",
+                "objectName": "sap.hana.xs.ide::Security",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.ide::Traces",
+                "objectName": "sap.hana.xs.ide::Traces",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::Administrator",
+                "objectName": "sap.hana.xs.lm::Administrator",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::Configure",
+                "objectName": "sap.hana.xs.lm::Configure",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::Display",
+                "objectName": "sap.hana.xs.lm::Display",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::ExecuteTransport",
+                "objectName": "sap.hana.xs.lm::ExecuteTransport",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::Transport",
+                "objectName": "sap.hana.xs.lm::Transport",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.lm::View",
+                "objectName": "sap.hana.xs.lm::View",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.sqlcc::Configure",
+                "objectName": "sap.hana.xs.sqlcc::Configure",
+                "type": "APPLICATIONPRIVILEGE"
+            },
+            {
+                "appName": "sap.hana.xs.sqlcc::View",
+                "objectName": "sap.hana.xs.sqlcc::View",
+                "type": "APPLICATIONPRIVILEGE"
+            }
+        ]
+    };
+}
+
 exports.post = function(req, res){
     switch(req.body.absoluteFunctionName) {
         // Roles
@@ -1253,6 +1885,18 @@ exports.post = function(req, res){
         // Delete role
         case 'sap.hana.ide.core.base.server.deleteRole':
             res.json(deleteRole(req.body.inputObject));
+            break;
+        // System Privileges Search
+        case 'sap.hana.ide.core.base.server.getSystemPrivileges':
+            res.json(getSystemPrivileges(req.body.inputObject));
+            break;
+        // Package Privileges Search
+        case 'sap.hana.ide.core.base.server.getPackages':
+            res.json(getPackages(req.body.inputObject));
+            break;
+        // Application Privileges Search
+        case 'sap.hana.ide.core.base.server.getApplicationPrivileges':
+            res.json(getApplicationPrivileges(req.body.inputObject));
             break;
         default:
             res.status(404).end();

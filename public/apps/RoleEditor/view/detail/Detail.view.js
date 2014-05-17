@@ -102,7 +102,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
             iconFirst: false,
             press: function() {
                 oController.router.navTo("assignment", {
-                    id: oController.oRouteArguments.id
+                    id: oController.oRouteArguments.id,
+                    tab: 'roles'
                 });
             }
         });

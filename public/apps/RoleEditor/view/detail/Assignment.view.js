@@ -11,12 +11,16 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
     createContent: function (oController) {
 
         // Workaround for UI5 bug - itemPress event never fired
-        $(document).on('click', '.sapMListTbl.sapMListUl .sapMListTblCell', function(evt) {
+        $(document).on('click', '.sapMListTbl.sapMListUl .sapMListTblRow', function(evt) {
             var isCheckBox = ($(evt.target).closest('.sapMCbMark').length > 0),
                 oItem = sap.ui.getCore().byId($(this).closest('tr').attr('id')),
                 oTable = sap.ui.getCore().byId($(this).closest('table').parent().attr('id'));
 
-            if(!isCheckBox) {
+            if(isCheckBox) {
+                oTable.setSelectedItem(oItem, !oItem.getSelected());
+                evt.preventDefault();
+                evt.stopPropagation();
+            } else {
                 oTable._onItemPressed(oItem, {});
             }
         });
@@ -33,13 +37,13 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             }
         }
 
-        function createTable(sTitle, sPath) {
+        function createTable(opts) {
 
             var table = new sap.m.Table({
                 headerToolbar: new sap.m.Toolbar({
                     content: [
                         new sap.m.Text({
-                            text: sTitle
+                            text: opts.title
                         }),
                         new sap.m.Button({
                             visible: editModeBinding(),
@@ -49,7 +53,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                             visible: editModeBinding(),
                             icon: "sap-icon://add",
                             press: function() {
-                                oController.openAddDialog();
+                                oController.openAddDialog(opts);
                             }
                         }),
                         new sap.m.Button({
@@ -99,7 +103,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             });
 
             table.bindAggregation("items", {
-                path: sPath,
+                path: opts.root,
                 factory: function(sId){
                     return new sap.m.ColumnListItem(sId, {
                         type: {
@@ -148,11 +152,13 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                 headerToolbar: new sap.m.Toolbar({
                     content: [
                         new sap.m.Text({
-                            text: "Catalog"
+                            text: "{/title}"
                         })
                     ]
                 }),
                 columns: [new sap.m.Column({
+                    width: "50px"
+                }), new sap.m.Column({
                     header: new sap.m.Text({
                         text: "Privilege"
                     }),
@@ -167,9 +173,18 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                     path: '/detailedPrivileges',
                     factory: function(sId) {
                         return new sap.m.ColumnListItem(sId, {
-                            cells: [new sap.m.Text({
+                            cells: [new sap.m.CheckBox({
+                                enabled: editModeBinding(),
+                                selected: {
+                                    path: 'objectId',
+                                    formatter: function(sObjectId) {
+                                        return !!sObjectId; // convert to boolean
+                                    }
+                                }
+                            }), new sap.m.Text({
                                 text: '{privilege}'
                             }), new sap.m.Select({
+                                enabled: editModeBinding(),
                                 selectedKey: '{isGrantable}',
                                 items: [new sap.ui.core.Item({
                                     key: "TRUE",
@@ -202,86 +217,102 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
         this.oAddDialog = new sap.m.TableSelectDialog({
             title: "Select Objects",
             multiSelect: true,
-            search: function(oEvent) {
+            search: function (oEvent) {
                 oController.addDialogSearch(oEvent.getParameter('value'));
             },
-            confirm: oController.addObject,
-            close: function() {
+            confirm: [oController.addObject, oController],
+            close: function () {
                 oView.oAddDialog.close();
             },
             columns: [new sap.m.Column({
                 header: new sap.m.Text({
                     text: "Object Name"
                 })
-            }), new sap.m.Column({
-                header: new sap.m.Text({
-                    text: "Type"
-                }),
-                width: "200px"
             })],
-            items: {
-                path: '/objects',
-                factory: function(sId) {
-                    return new sap.m.ColumnListItem(sId, {
-                        cells: [new sap.m.Text({
-                            text: '{objectName}'
-                        }), new sap.m.Text({
-                            text: '{type}'
-                        })]
-                    });
-                }
-            }
+            items: []
         });
 
         // Granted Roles
 
-        this.oTableRoles = createTable("Granted Roles", "/roles");
+        this.oTableRoles = createTable({
+            title: "Granted Roles",
+            root: "/roles",
+            addSearchRoot: "/roles",
+            addSearchFunction: "sap.hana.ide.core.base.server.getAllRoles",
+            addSearchName: "roleName"
+        });
 
         // System Privileges
 
-        this.oTableSystem = createTable("System Privileges", "/privileges");
+        this.oTableSystem = createTable({
+            title: "System Privileges",
+            root: "/privileges",
+            addSearchRoot: "/systems",
+            addSearchFunction: "sap.hana.ide.core.base.server.getSystemPrivileges",
+            addSearchName: "sysName"
+        });
 
         // SQL Privileges
 
-        this.oTableSql = createTable("SQL Privileges", "/privileges");
+        this.oTableSql = createTable({
+            title: "SQL Privileges",
+            root: "/privileges",
+            addSearchRoot: "/objects",
+            addSearchFunction: "sap.hana.ide.core.base.server.getSqlObjects",
+            addSearchName: "objectName"
+        });
 
         // Package Privileges
 
-        this.oTablePackage = createTable("Package Privileges", "/privileges");
+        this.oTablePackage = createTable({
+            title: "Package Privileges",
+            root: "/privileges",
+            addSearchRoot: "/packageInfos",
+            addSearchFunction: "sap.hana.ide.core.base.server.getPackages",
+            addSearchName: "packageName"
+        });
 
         // Application Privileges
 
-        this.oTableApplication = createTable("Application Privileges", "/privileges");
+        this.oTableApplication = createTable({
+            title: "Application Privileges",
+            root: "/privileges",
+            addSearchRoot: "/apps",
+            addSearchFunction: "sap.hana.ide.core.base.server.getApplicationPrivileges",
+            addSearchName: "appName"
+        });
 
         // Tabs
 
         this.oIconTabBar = new sap.m.IconTabBar({
+            expandable: false,
             items: [new sap.m.IconTabFilter({
+                key: "roles",
                 icon: "sap-icon://role",
                 text: "Roles",
                 content: [this.oTableRoles]
             }), new sap.m.IconTabFilter({
+                key: "system",
                 icon: "sap-icon://it-system",
                 text: "System",
                 content: [this.oTableSystem]
             }), new sap.m.IconTabFilter({
+                key: "sql",
                 icon: "sap-icon://product",
                 text: "SQL",
                 content: [this.oTableSql]
             }), new sap.m.IconTabFilter({
+                key: "package",
                 icon: "sap-icon://suitcase",
                 text: "Package",
                 content: [this.oTablePackage]
             }), new sap.m.IconTabFilter({
+                key: "application",
                 icon: "sap-icon://header",
                 text: "Application",
                 content: [this.oTableApplication]
             })],
-            select: function(oEvent) {
-                var numberOfItems = oEvent.getParameter('selectedItem').getContent()[0].getItems().length;
-                oView.getModel().setProperty('/headerNumber', numberOfItems);
-                oView.getModel().setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
-            }
+            select: [oController.onIconBarSelect, oController]
         });
 
         // Toolbar Items

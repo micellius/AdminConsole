@@ -54,11 +54,13 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
         });
 
         this.oSettingsButton = new sap.m.Button({
-            icon: "sap-icon://settings"
+            icon: "sap-icon://settings",
+            enabled: false
         });
 
         this.oFilterButton = new sap.m.Button({
-            icon: "sap-icon://filter"
+            icon: "sap-icon://filter",
+            enabled: false
         });
 
         this.oSortButton = new sap.m.Button({
@@ -69,7 +71,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
         });
 
         this.oAddButton = new sap.m.Button({
-            icon: "sap-icon://add"
+            icon: "sap-icon://add",
+            press: [oController.onAddRolePress, oController]
         });
 
         this.oPage = new sap.m.Page({

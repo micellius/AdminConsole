@@ -1,3 +1,6 @@
+.sapUiRFLRow .sapUiRFLContainer {
+    vertical-align: middle;
+}
 .sapMPanel .sapMTB{
     background-color:#fff;
 }

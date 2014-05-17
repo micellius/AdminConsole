@@ -6,18 +6,58 @@
  */
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master", {
     onInit : function () {
+        var controller = this;
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
         this.router.attachRoutePatternMatched(this._onRouteMatched, this);
         this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
+        this.oAppController.oEventBus.subscribe('deleteRole', function() {
+            var sRoleName = arguments[2].roleName,
+                oData = controller.getView().getModel().getData(),
+                oRole,
+                i, l;
+
+            controller.getView().oList.removeSelections(true);
+
+            for(i = 0, l = oData.roles.length; i < l; i++) {
+                oRole = oData.roles[i];
+                if(oRole.roleName === sRoleName) {
+                    oData.roles.splice(i, 1);
+                    controller.getView().getModel().refresh();
+                    break;
+                }
+            }
+
+        });
+        this.oAppController.oEventBus.subscribe('addRole', function() {
+            var oRole = arguments[2];
+                oModel = controller.getView().getModel();
+            oModel.getData().roles.push(oRole);
+            oModel.refresh(true);
+            controller.router.navTo('detail', {
+                id: oRole.roleId
+            })
+        });
         this._loadData();
     },
 
     onListSelect: function() {
-        this._showDetail.apply(this, this.getView().oList.getSelectedItems());
+        var aSelectedItems = this.getView().oList.getSelectedItems();
+        if(aSelectedItems.length > 0) {
+            this._showDetail.apply(this, aSelectedItems);
+        } else {
+            this.router.navTo("empty");
+        }
     },
 
     onListItemPress: function(oEvent) {
         this._showDetail(oEvent.getParameter("listItem"));
+    },
+
+    onAddRolePress: function() {
+        this.getView().oList.removeSelections(true);
+        this.router.navTo("detail", {
+            id: ''
+        });
     },
 
     _onRouteMatched: function(oEvent) {

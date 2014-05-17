@@ -28,4 +28,4 @@ node_modules
 bower_components
 
 # Generated CSS
-public/styles/*.css
+public/stylesheets/*.css

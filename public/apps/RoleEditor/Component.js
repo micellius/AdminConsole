@@ -31,7 +31,13 @@ sap.ui.core.UIComponent.extend("tests.adminconsole.apps.RoleEditor.Component", {
                     name: "empty",
                     viewPath: "tests.adminconsole.apps.RoleEditor.view.master",
                     view: "Master",
-                    targetAggregation: "masterPages"
+                    targetAggregation: "masterPages",
+                    subroutes: [{
+                        pattern: "",
+                        view: "Empty",
+                        viewPath: "tests.adminconsole.apps.RoleEditor.view.detail",
+                        targetAggregation: "detailPages"
+                    }]
                 }, {
                     pattern: "roles/:id:",
                     name: "master",

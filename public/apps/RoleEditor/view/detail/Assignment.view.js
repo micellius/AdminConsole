@@ -83,9 +83,9 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                         text: "Grantor"
                     })
                 })],
-                itemPress: function() {
+                itemPress: function(oEvent) {
                     var oItem = oEvent.getParameter('listItem');
-                    if(!table.getModel().getProperty('/editMode')) {
+                    if(oItem.getType() === sap.m.ListType.Navigation) {
                         oController.openPopover(oItem);
                     }
                 }

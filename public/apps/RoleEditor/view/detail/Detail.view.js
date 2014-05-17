@@ -33,12 +33,14 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
                 text: "General Info"
             }), new sap.m.Label({
                 text: "Role Name"
-            }), new sap.m.Text({
-                text: "{/generalName}"
+            }), new sap.m.Input({
+                value: "{/generalName}",
+                editable: "{/editMode}"
             }), new sap.m.Label({
                 text: "ID"
-            }), new sap.m.Text({
-                text: "{/generalId}"
+            }), new sap.m.Input({
+                value: "{/generalId}",
+                editable: false
             })]
         });
 
@@ -74,12 +76,14 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
                 maxContainerCols: 2,
                 content: [new sap.m.Label({
                     text: "Role Mode"
-                }), new sap.m.Text({
-                    text: "{/propertiesRoleMode}"
+                }), new sap.m.Input({
+                    value: "{/propertiesRoleMode}",
+                    editable: "{/editMode}"
                 }), new sap.m.Label({
                     text: "Role Creator"
-                }), new sap.m.Text({
-                    text: "{/propertiesRoleCreator}"
+                }), new sap.m.Input({
+                    value: "{/propertiesRoleCreator}",
+                    editable: "{/editMode}"
                 })]
             })
         });
@@ -106,6 +110,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
         this.oEditButton = new sap.m.Button({
             visible: not("/editMode"),
             text: "Edit",
+            enabled: false,
             press: function() {
                 view.getModel().setProperty("/editMode", true);
             }
@@ -115,9 +120,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
             content: [new sap.m.Text()],
             beginButton: new sap.m.Button({
                 text: "Delete",
-                press: function() {
-                    view.oDeleteDialog.close();
-                }
+                press: [oController.onDeleteDialogDeletePress, oController]
             }),
             endButton: new sap.m.Button({
                 text: "Cancel",
@@ -130,25 +133,20 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
         this.oDeleteButton = new sap.m.Button({
             visible: not("/editMode"),
             text: "Delete",
-            press: function() {
-                var data = this.getModel().getData();
-                view.oDeleteDialog.setTitle(data.deleteDialogTitle);
-                view.oDeleteDialog.getContent()[0].setText(data.deleteDialogText);
-                view.oDeleteDialog.open();
-            }
+            press: [oController.onDeletePress, oController]
         });
 
         this.oActionButton = new sap.m.Button({
-            visible: not("/editMode"),
-            icon: "sap-icon://action"
+            //visible: not("/editMode"),
+            icon: "sap-icon://action",
+            enabled: false,
+            visible: false
         });
 
         this.oSaveButton = new sap.m.Button({
             visible: "{/editMode}",
             text: "Save",
-            press: function() {
-                view.getModel().setProperty("/editMode", false);
-            }
+            press: [oController.onSavePress, oController]
         });
 
         this.oSaveButton.setVisible(false);
@@ -156,9 +154,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
         this.oCancelButton = new sap.m.Button({
             visible: "{/editMode}",
             text: "Cancel",
-            press: function() {
-                view.getModel().setProperty("/editMode", false);
-            }
+            press: [oController.onCancelPress, oController]
         });
 
         this.oCancelButton.setVisible(false);

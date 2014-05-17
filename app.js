@@ -16,7 +16,8 @@ var cookieParser = require('cookie-parser');
 var methodOverride = require('method-override');
 var session = require('express-session');
 var stylus = require('stylus');
-var routes = require('./routes');
+var index = require('./routes/index.js');
+var RoleEditor = require('./routes/RoleEditor.js');
 var net = require('./routes/net.js');
 var csrf = require('./routes/csrf.js');
 
@@ -42,7 +43,8 @@ app.use(stylus.middleware({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/resources', express.static(__dirname + '/bower_components/openui5-bower/resources')); // UI5
 
-app.get('/', routes.index);
+app.get('/', index.get);
+app.get('/RoleEditor', RoleEditor.get);
 app.post('/sap/hana/ide/core/base/server/net.xsjs', net.post);
 app.head('/sap/hana/xs/ide/editor/server/csrf.xsjs', csrf.head);
 

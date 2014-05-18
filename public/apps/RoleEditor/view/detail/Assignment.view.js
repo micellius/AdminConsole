@@ -37,9 +37,10 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             }
         }
 
-        function createTable(opts) {
+        function createTable(sType) {
 
-            var table = new sap.m.Table({
+            var opts = oController.getOpts(sType),
+                table = new sap.m.Table({
                 headerToolbar: new sap.m.Toolbar({
                     content: [
                         new sap.m.Text({
@@ -234,53 +235,23 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
 
         // Granted Roles
 
-        this.oTableRoles = createTable({
-            title: "Granted Roles",
-            root: "/roles",
-            addSearchRoot: "/roles",
-            addSearchFunction: "sap.hana.ide.core.base.server.getAllRoles",
-            addSearchName: "roleName"
-        });
+        this.oTableRoles = createTable('roles');
 
         // System Privileges
 
-        this.oTableSystem = createTable({
-            title: "System Privileges",
-            root: "/privileges",
-            addSearchRoot: "/systems",
-            addSearchFunction: "sap.hana.ide.core.base.server.getSystemPrivileges",
-            addSearchName: "sysName"
-        });
+        this.oTableSystem = createTable('system');
 
         // SQL Privileges
 
-        this.oTableSql = createTable({
-            title: "SQL Privileges",
-            root: "/privileges",
-            addSearchRoot: "/objects",
-            addSearchFunction: "sap.hana.ide.core.base.server.getSqlObjects",
-            addSearchName: "objectName"
-        });
+        this.oTableSql = createTable('sql');
 
         // Package Privileges
 
-        this.oTablePackage = createTable({
-            title: "Package Privileges",
-            root: "/privileges",
-            addSearchRoot: "/packageInfos",
-            addSearchFunction: "sap.hana.ide.core.base.server.getPackages",
-            addSearchName: "packageName"
-        });
+        this.oTablePackage = createTable('package');
 
         // Application Privileges
 
-        this.oTableApplication = createTable({
-            title: "Application Privileges",
-            root: "/privileges",
-            addSearchRoot: "/apps",
-            addSearchFunction: "sap.hana.ide.core.base.server.getApplicationPrivileges",
-            addSearchName: "appName"
-        });
+        this.oTableApplication = createTable('application');
 
         // Tabs
 
@@ -327,7 +298,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
 
         this.oDeleteButton = new sap.m.Button({
             visible: editModeBinding(true),
-            text: "Delete"
+            text: "Delete",
+            press: [oController.onDeletePress, oController]
         });
 
         this.oApplyButton = new sap.m.Button({
@@ -346,9 +318,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
         this.oCancelButton = new sap.m.Button({
             visible: editModeBinding(),
             text: "Cancel",
-            press: function() {
-                oController.toggleEditMode();
-            }
+            press: [oController.onCancelPress, oController]
         });
 
         // Page

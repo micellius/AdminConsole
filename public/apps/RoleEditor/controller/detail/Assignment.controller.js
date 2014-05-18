@@ -8,7 +8,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         var oController = this;
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
         this.router.attachRouteMatched(function(oEvent) {
-            // Remember old arguments to avoid redundant ajax calls
+            // Remember old arguments to avoid redundant ajax calls on internal route change
             oController.oOldRouteArguments = oController.oRouteArguments;
             oController.oRouteArguments = oEvent.getParameters().arguments;
         });
@@ -28,7 +28,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     oView.oIconTabBar.setSelectedKey(sTab);
                 }
             }
-
+            // FIXME: oRouteArguments.id is not valid in case new role selected from master view and not from URL
             if(!oController.oOldRouteArguments ||
                 oController.oOldRouteArguments.id !== oController.oRouteArguments.id
             ) {
@@ -103,6 +103,15 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         });
         oModel.setProperty('/headerNumber', numberOfItems);
         oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
+    },
+
+    onCancelPress: function() {
+        this._reset();
+        this.toggleEditMode();
+    },
+
+    onDeletePress: function() {
+        this.oAppController.oEventBus.publish('deleteSelectedRoles');
     },
 
     search: function(oTable, sText) {
@@ -210,7 +219,178 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
     },
 
     addObject: function(oEvent) {
+        var aSelectedItems = oEvent.getParameter('selectedItems'),
+            privilegesToGrant,
+            privilegesToGrantIds,
+            oModel = this.getView().getModel(),
+            oTableModel, sTableModelRoot, oData, sType, sPath, oPrivilege,
+            i, l, createPrivilege;
 
+        sType = this.getView().oIconTabBar.getSelectedKey();
+        sPath = '/modified_' + sType + '_privilegesToGrant';
+        oTableModel = this.getView().oIconTabBar.getItems().filter(function(item) {
+            return item.getKey() === sType;
+        })[0].getContent()[0].getModel();
+        sTableModelRoot = oEvent.oSource.getModel().getData().opts.root.substring(1);
+        createPrivilege = this._privelegeToGrantFactory(sType);
+        privilegesToGrant = (oModel.getProperty(sPath) || []);
+        privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
+            return item.objectId;
+        });
+
+        for(i=0, l=aSelectedItems.length; i<l; i++) {
+            oData = aSelectedItems[i].getBindingContext().getObject();
+            oPrivilege = createPrivilege(oData);
+            if(privilegesToGrantIds.indexOf(oPrivilege.objectId) === -1) { // Don't add duplicates
+                privilegesToGrant.push(oPrivilege);
+            }
+        }
+
+        if(privilegesToGrant.length > 0) {
+            oModel.setProperty(sPath, privilegesToGrant);
+            oModel.setProperty('/isModified', true);
+            oTableModel.getData()[sTableModelRoot] = oTableModel.getData()[sTableModelRoot].concat(privilegesToGrant);
+            oTableModel.refresh(true);
+        }
+
+    },
+
+    getOpts: function(sKey) {
+        switch(sKey) {
+            case 'roles':
+                return {
+                    title: "Granted Roles",
+                    root: "/roles",
+                    addSearchRoot: "/roles",
+                    addSearchFunction: "sap.hana.ide.core.base.server.getAllRoles",
+                    addSearchName: "roleName"
+                };
+            case 'system':
+                return {
+                    title: "System Privileges",
+                    root: "/privileges",
+                    addSearchRoot: "/systems",
+                    addSearchFunction: "sap.hana.ide.core.base.server.getSystemPrivileges",
+                    addSearchName: "sysName"
+                };
+            case 'sql':
+                return {
+                    title: "SQL Privileges",
+                    root: "/privileges",
+                    addSearchRoot: "/objects",
+                    addSearchFunction: "sap.hana.ide.core.base.server.getSqlObjects",
+                    addSearchName: "objectName"
+                };
+            case 'package':
+                return {
+                    title: "Package Privileges",
+                    root: "/privileges",
+                    addSearchRoot: "/packageInfos",
+                    addSearchFunction: "sap.hana.ide.core.base.server.getPackages",
+                    addSearchName: "packageName"
+                };
+            case 'application':
+                return {
+                    title: "Application Privileges",
+                    root: "/privileges",
+                    addSearchRoot: "/apps",
+                    addSearchFunction: "sap.hana.ide.core.base.server.getApplicationPrivileges",
+                    addSearchName: "appName"
+                };
+            default:
+                return {};
+        }
+    },
+
+    _reset: function() {
+        var oModel = this.getView().getModel();
+        this.getView().oIconTabBar.getItems().forEach(function(item) {
+            var oTableModel = item.getContent()[0].getModel(),
+                sType = item.getKey(),
+                sRoot = this.getOpts(sType).root.substring(1);
+
+            oTableModel.getData()[sRoot] = oTableModel.getData()[sRoot].filter(function(item) {
+                return item.state !== 'new';
+            });
+
+            oTableModel.refresh(true);
+
+            oModel.setProperty('/modified_' + sType + '_privilegesToGrant', []);
+
+        }, this);
+        oModel.setProperty('/isModified', false);
+    },
+
+    _privelegeToGrantFactory: function(sType) {
+        switch(sType) {
+            case 'roles':
+                return function(oData) {
+                    return {
+                        detailedItems: null,
+                        grantor: oData.roleCreator,
+                        isGrantable: 'FALSE',
+                        objectId: oData.objectName + '-' + oData.roleCreator,
+                        objectName: oData.objectName,
+                        objectType: 'ROLE',
+                        privilege: 'role',
+                        state: 'new'
+                    };
+                };
+            case 'system':
+                return function(oData) {
+                    return {
+                        detailedItems: {},
+                        grantor: 'SYSTEM',
+                        isGrantable: 'FALSE',
+                        objectId: oData.objectName + '-SYSTEM',
+                        objectName: oData.objectName,
+                        objectType: 'SYSTEMPRIVILEGE',
+                        privilege: '',
+                        state: 'new'
+                    };
+                };
+            case 'sql':
+                return function(oData) {
+                    return {
+                        grantor: 'SYSTEM',
+                        isGrantable: 'FALSE',
+                        objectId: oData.objectName + '-SYSTEM',
+                        objectName: oData.objectName,
+                        objectType: oData.type,
+                        privilege: '',
+                        schemaName: oData.schemaName,
+                        state: 'new'
+                    };
+                };
+            case 'package':
+                return function(oData) {
+                    return {
+                        grantor: 'SYSTEM',
+                        isGrantable: 'FALSE',
+                        objectId: oData.objectName + '-SYSTEM',
+                        objectName: oData.packageName,
+                        objectType: 'REPO',
+                        privilege: '',
+                        schemaName: oData.packageName,
+                        state: 'new'
+                    };
+                };
+            case 'application':
+                return function(oData) {
+                    return {
+                        detailedItems: {},
+                        grantor: '_SYS_REPO',
+                        isGrantable: 'FALSE',
+                        objectId: oData.objectName + '-_SYS_REPO',
+                        objectName: oData.objectName,
+                        objectType: 'APPLICATIONPRIVILEGE',
+                        privilege: '',
+                        state: 'new'
+                    };
+                };
+            default:
+                return function() {return null;}
+        }
     },
 
     _loadData: function(component, opts) {

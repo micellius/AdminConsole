@@ -16,6 +16,9 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
             }
         });
         this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
+        this.oAppController.oEventBus.subscribe('deleteSelectedRoles', function() {
+            controller.onDeletePress();
+        });
         this.oAppController.oEventBus.subscribe('selectRoles', function() {
             var aRoles = arguments[2],
                 oRole,

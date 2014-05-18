@@ -12,5 +12,8 @@ tests.adminconsole.apps.RoleEditor.utils.API = {
     packageName: location.hostname.indexOf('.emea.global.corp.sap') ? 'sap.hana.ide.core.plugins.security.server.hana' : 'sap.hana.ide.core.base.server',
     getAbsoluteFunctionName: function(apiName) {
         return [tests.adminconsole.apps.RoleEditor.utils.API.packageName, apiName].join('.');
+    },
+    normalizeRole: function(oRole) {
+        return oRole.role || oRole;
     }
 };

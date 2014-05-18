@@ -93,13 +93,15 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
         var oController = this,
             oModel = this.getView().getModel(),
             oView = this.oAppController.getView(),
-            sName = oModel.getProperty('/generalName');
+            sName = oModel.getProperty('/generalName'),
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
         oView.setBusy(true);
         if(oModel.getProperty('/newMode')) {
             oController._createRole(sName).
                 done(function() {
                     oController._getRole(sName).
                         done(function(oRole) {
+                            oRole = API.normalizeRole(oRole);
                             oModel.setData({
                                 headerTitle: oRole.objectName,
                                 headerDesctiption: oRole.roleId,

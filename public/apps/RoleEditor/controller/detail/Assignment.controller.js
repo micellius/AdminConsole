@@ -44,56 +44,58 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             ) {
 
                 this.oRole = oRole = aRoles[0];
-                oData = {
-                    headerTitle: oRole.objectName,
-                    headerDesctiption: oRole.roleId
-                };
 
-                oView.setModel(new sap.ui.model.json.JSONModel(oData));
+                if(oRole) {
+                    oData = {
+                        headerTitle: oRole.objectName,
+                        headerDesctiption: oRole.roleId
+                    };
 
-                // Granted Roles
-                this._loadData(oView.oTableRoles, {
-                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getRolesByGrantee",
-                    "inputObject": {
-                        "grantee": oRole.objectName
-                    }
-                }).done(onTabLoaded);
+                    oView.setModel(new sap.ui.model.json.JSONModel(oData));
 
-                // System Privileges
-                this._loadData(oView.oTableSystem, {
-                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee",
-                    "inputObject": {
-                        "grantee": oRole.objectName
-                    }
-                }).done(onTabLoaded);
+                    // Granted Roles
+                    this._loadData(oView.oTableRoles, {
+                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getRolesByGrantee",
+                        "inputObject": {
+                            "grantee": oRole.objectName
+                        }
+                    }).done(onTabLoaded);
 
-                // SQL Privileges
-                this._loadData(oView.oTableSql, {
-                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                    "inputObject": {
-                        "grantee": oRole.objectName,
-                        "type": "object"
-                    }
-                }).done(onTabLoaded);
+                    // System Privileges
+                    this._loadData(oView.oTableSystem, {
+                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee",
+                        "inputObject": {
+                            "grantee": oRole.objectName
+                        }
+                    }).done(onTabLoaded);
 
-                // Package
-                this._loadData(oView.oTablePackage, {
-                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                    "inputObject": {
-                        "grantee": oRole.objectName,
-                        "type": "package"
-                    }
-                }).done(onTabLoaded);
+                    // SQL Privileges
+                    this._loadData(oView.oTableSql, {
+                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "inputObject": {
+                            "grantee": oRole.objectName,
+                            "type": "object"
+                        }
+                    }).done(onTabLoaded);
 
-                // Application
-                this._loadData(oView.oTableApplication, {
-                    "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
-                    "inputObject": {
-                        "grantee": oRole.objectName,
-                        "type": "application"
-                    }
-                }).done(onTabLoaded);
+                    // Package
+                    this._loadData(oView.oTablePackage, {
+                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "inputObject": {
+                            "grantee": oRole.objectName,
+                            "type": "package"
+                        }
+                    }).done(onTabLoaded);
 
+                    // Application
+                    this._loadData(oView.oTableApplication, {
+                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "inputObject": {
+                            "grantee": oRole.objectName,
+                            "type": "application"
+                        }
+                    }).done(onTabLoaded);
+                }
             } else {
                 if(oView.oIconTabBar.getSelectedKey() !== oController.oRouteArguments.tab) {
                     // Synch URL -> tab

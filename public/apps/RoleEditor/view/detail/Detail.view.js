@@ -97,6 +97,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Detail", {
 
         this.oAssignButton = new sap.m.Button({
             visible: not("/editMode"),
+            enabled: "{/allowAssign}",
             text: "Assignment",
             icon: "sap-icon://slim-arrow-right",
             iconFirst: false,

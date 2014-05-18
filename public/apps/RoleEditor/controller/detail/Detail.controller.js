@@ -37,6 +37,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                     propertiesRoleCreator: '',
                     editMode: true,
                     newMode: true,
+                    allowAssign: false,
                     deleteDialogTitle: "Delete Role?",
                     deleteDialogText: "Are you sure you want to delete role?"
                 };
@@ -54,6 +55,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                     propertiesRoleCreator: oRole.roleCreator,
                     editMode: false,
                     newMode: false,
+                    allowAssign: true,
                     deleteDialogTitle: "Delete Role?",
                     deleteDialogText: "Are you sure you want to delete role\n" + oRole.objectName + "?"
                 };
@@ -72,6 +74,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                     propertiesRoleCreator: '',
                     editMode: false,
                     newMode: false,
+                    allowAssign: false,
                     deleteDialogTitle: "Delete Roles?",
                     deleteDialogText: "Are you sure you want to delete roles:\n" + aRoles.map(function(item) {
                         return item.objectName

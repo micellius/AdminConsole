@@ -4,6 +4,7 @@
  * Date: 5/8/14
  * Time: 1:50 PM
  */
+jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.API");
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master", {
     onInit : function () {
         var controller = this;
@@ -130,7 +131,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
     _loadData: function() {
 
         var oModel,
-            oDeferred;
+            oDeferred,
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oDeferred = $.Deferred();
 
@@ -149,7 +151,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
                 oHeaders;
 
             oParams = JSON.stringify({
-                "absoluteFunctionName":"sap.hana.ide.core.base.server.getAllRoles",
+                "absoluteFunctionName": API.getAbsoluteFunctionName("getAllRoles"),
                 "inputObject":{}
             });
 
@@ -160,7 +162,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method

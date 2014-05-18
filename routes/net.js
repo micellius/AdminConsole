@@ -1219,7 +1219,7 @@ function deleteRole(opts) {
     }
 }
 
-function getSystemPrivileges(opts) {
+function getSystemPrivileges() {
     return {
         "systems": [
             {
@@ -1426,7 +1426,7 @@ function getSystemPrivileges(opts) {
     };
 }
 
-function getPackages(opts) {
+function getPackages() {
     return {
         "packageInfos": [
             {
@@ -1855,47 +1855,59 @@ exports.post = function(req, res){
     switch(req.body.absoluteFunctionName) {
         // Roles
         case 'sap.hana.ide.core.base.server.getAllRoles':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getAllRoles':
             res.json(getAllRoles());
             break;
         // Granted Roles
         case 'sap.hana.ide.core.base.server.getRolesByGrantee':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getRolesByGrantee':
             res.json(getRolesByGrantee(req.body.inputObject));
             break;
         // System Privileges
         case 'sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getSystemPrivilegesByGrantee':
             res.json(getSystemPrivilegesByGrantee(req.body.inputObject));
             break;
         // SQL Privileges, Package Privileges, Application Privileges
         case 'sap.hana.ide.core.base.server.getPrivilegesByGrantee':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getPrivilegesByGrantee':
             res.json(getPrivilegesByGrantee(req.body.inputObject));
             break;
         case 'sap.hana.ide.core.base.server.getDetailedPrivilegesByGrantee':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getDetailedPrivilegesByGrantee':
             res.json(getDetailedPrivilegesByGrantee(req.body.inputObject));
             break;
         case 'sap.hana.ide.core.base.server.getSqlObjects':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getSqlObjects':
             res.json(getSqlObjects(req.body.inputObject));
             break;
         case 'sap.hana.ide.core.base.server.updatePrivilege4Role':
+        case 'sap.hana.ide.core.plugins.security.server.hana.updatePrivilege4Role':
             res.json(updatePrivilege4Role(req.body.inputObject));
             break;
         // Get role (after creating new)
         case 'sap.hana.ide.core.base.server.getRole':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getRole':
             res.json(getRole(req.body.inputObject));
             break;
         // Delete role
         case 'sap.hana.ide.core.base.server.deleteRole':
+        case 'sap.hana.ide.core.plugins.security.server.hana.deleteRole':
             res.json(deleteRole(req.body.inputObject));
             break;
         // System Privileges Search
         case 'sap.hana.ide.core.base.server.getSystemPrivileges':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getSystemPrivileges':
             res.json(getSystemPrivileges(req.body.inputObject));
             break;
         // Package Privileges Search
         case 'sap.hana.ide.core.base.server.getPackages':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getPackages':
             res.json(getPackages(req.body.inputObject));
             break;
         // Application Privileges Search
         case 'sap.hana.ide.core.base.server.getApplicationPrivileges':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getApplicationPrivileges':
             res.json(getApplicationPrivileges(req.body.inputObject));
             break;
         default:

@@ -4,6 +4,7 @@
  * Date: 5/8/14
  * Time: 1:50 PM
  */
+jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.API");
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail", {
 
     onInit: function() {
@@ -179,7 +180,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
 
     _createRole: function(sRoleName) {
         var oModel = new sap.ui.model.json.JSONModel(),
-            oDeferred = $.Deferred();
+            oDeferred = $.Deferred(),
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oModel.attachRequestCompleted(function(oEvent) {
             if(oEvent.getParameter('success')) {
@@ -198,7 +200,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                 oHeaders;
 
             oParams = JSON.stringify({
-                "absoluteFunctionName": "sap.hana.ide.core.base.server.updatePrivilege4Role",
+                "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4Role"),
                 "inputObject": {
                     "roleInfo": {
                         "roleName": sRoleName,
@@ -216,7 +218,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method
@@ -231,7 +233,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
 
     _getRole: function(sRoleName) {
         var oModel = new sap.ui.model.json.JSONModel(),
-            oDeferred = $.Deferred();
+            oDeferred = $.Deferred(),
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oModel.attachRequestCompleted(function(oEvent) {
             if(oEvent.getParameter('success')) {
@@ -250,7 +253,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                 oHeaders;
 
             oParams = JSON.stringify({
-                "absoluteFunctionName": "sap.hana.ide.core.base.server.getRole",
+                "absoluteFunctionName": API.getAbsoluteFunctionName("getRole"),
                 "inputObject": {
                     "roleName": sRoleName
                 }
@@ -263,7 +266,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method
@@ -278,7 +281,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
 
     _deleteRole: function(sRoleName) {
         var oModel = new sap.ui.model.json.JSONModel(),
-            oDeferred = $.Deferred();
+            oDeferred = $.Deferred(),
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oModel.attachRequestCompleted(function(oEvent) {
             if(oEvent.getParameter('success')) {
@@ -297,7 +301,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
                 oHeaders;
 
             oParams = JSON.stringify({
-                "absoluteFunctionName": "sap.hana.ide.core.base.server.deleteRole",
+                "absoluteFunctionName": API.getAbsoluteFunctionName("deleteRole"),
                 "inputObject": {
                     "roleName": sRoleName
                 }
@@ -310,7 +314,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Detail",
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method

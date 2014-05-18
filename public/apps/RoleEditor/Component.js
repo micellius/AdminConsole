@@ -5,6 +5,7 @@
  * Time: 1:26 PM
  */
 jQuery.sap.require("sap.ui.core.UIComponent");
+jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.API");
 jQuery.sap.declare("tests.adminconsole.apps.RoleEditor.Component");
 
 sap.ui.core.UIComponent.extend("tests.adminconsole.apps.RoleEditor.Component", {

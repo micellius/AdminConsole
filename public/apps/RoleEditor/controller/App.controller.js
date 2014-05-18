@@ -4,6 +4,7 @@
  * Date: 5/8/14
  * Time: 1:50 PM
  */
+jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.API");
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.App", {
 
     onInit : function () {
@@ -17,7 +18,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.App", {
     },
 
     getCsrfToken: function(callback) {
-        var controller = this;
+        var controller = this,
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         function executeCallback() {
             typeof callback === 'function' && callback(controller.csrfToken);
@@ -29,7 +31,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.App", {
             if(!controller.csrfPromise) {
                 controller.csrfPromise = $.ajax({
                     type: "HEAD",
-                    url: "/sap/hana/xs/ide/editor/server/csrf.xsjs",
+                    url: API.csrfServiceUrl,
                     headers: {
                         "X-CSRF-Token": "Fetch"
                     }

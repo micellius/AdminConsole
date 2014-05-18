@@ -2,6 +2,7 @@
  * Created by vadimto on 10.05.14.
  */
 jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.Privileges");
+jQuery.sap.require("tests.adminconsole.apps.RoleEditor.utils.API");
 sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignment", {
 
     onInit: function() {
@@ -21,7 +22,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                 oRole,
                 oData,
                 oView = this.getView(),
-                loadedTabsCouter = 0;
+                loadedTabsCouter = 0,
+                API = tests.adminconsole.apps.RoleEditor.utils.API;
 
             function onTabLoaded() {
                 var sTab = oController.oRouteArguments.tab || 'roles',
@@ -55,7 +57,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
                     // Granted Roles
                     this._loadData(oView.oTableRoles, {
-                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getRolesByGrantee",
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("getRolesByGrantee"),
                         "inputObject": {
                             "grantee": oRole.objectName
                         }
@@ -63,7 +65,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
                     // System Privileges
                     this._loadData(oView.oTableSystem, {
-                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getSystemPrivilegesByGrantee",
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("getSystemPrivilegesByGrantee"),
                         "inputObject": {
                             "grantee": oRole.objectName
                         }
@@ -71,7 +73,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
                     // SQL Privileges
                     this._loadData(oView.oTableSql, {
-                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
                         "inputObject": {
                             "grantee": oRole.objectName,
                             "type": "object"
@@ -80,7 +82,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
                     // Package
                     this._loadData(oView.oTablePackage, {
-                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
                         "inputObject": {
                             "grantee": oRole.objectName,
                             "type": "package"
@@ -89,7 +91,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
                     // Application
                     this._loadData(oView.oTableApplication, {
-                        "absoluteFunctionName": "sap.hana.ide.core.base.server.getPrivilegesByGrantee",
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
                         "inputObject": {
                             "grantee": oRole.objectName,
                             "type": "application"
@@ -115,6 +117,11 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         });
         oModel.setProperty('/headerNumber', numberOfItems);
         oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
+    },
+
+    onSavePress: function() {
+        console.log('Save:', this.getView().getModel().getData());
+        this.toggleEditMode();
     },
 
     onCancelPress: function() {
@@ -203,7 +210,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
-                oHeaders;
+                oHeaders,
+                API = tests.adminconsole.apps.RoleEditor.utils.API;
 
             oParams = {
                 "absoluteFunctionName": opts.addSearchFunction,
@@ -219,7 +227,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method
@@ -407,7 +415,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
     _loadData: function(component, opts) {
         var oModel,
-            oDeferred;
+            oDeferred,
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oDeferred = $.Deferred();
 
@@ -430,7 +439,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method
@@ -445,7 +454,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
     _loadDetailedPrivileges: function(oTargetModel, oData, sRoleName) {
         var oModel,
-            oDeferred;
+            oDeferred,
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         oDeferred = $.Deferred();
 
@@ -476,7 +486,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                 oHeaders;
 
             oParams = JSON.stringify({
-                absoluteFunctionName: "sap.hana.ide.core.base.server.getDetailedPrivilegesByGrantee",
+                absoluteFunctionName: API.getAbsoluteFunctionName("getDetailedPrivilegesByGrantee"),
                 inputObject: {
                     grantee: sRoleName,
                     objectName: oData.objectName,
@@ -491,7 +501,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             };
 
             oModel.loadData(
-                "/sap/hana/ide/core/base/server/net.xsjs",  // URL
+                API.netServiceUrl,                          // URL
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method

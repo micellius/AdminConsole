@@ -310,9 +310,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
         this.oSaveButton = new sap.m.Button({
             visible: editModeBinding(),
             text: "Save",
-            press: function() {
-                oController.toggleEditMode();
-            }
+            press: [oController.onSavePress, oController]
         });
 
         this.oCancelButton = new sap.m.Button({

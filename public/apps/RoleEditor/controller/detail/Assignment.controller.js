@@ -8,9 +8,12 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         var oController = this;
         this.router = sap.ui.core.UIComponent.getRouterFor(this);
         this.router.attachRouteMatched(function(oEvent) {
-            // Remember old arguments to avoid redundant ajax calls on internal route change
-            oController.oOldRouteArguments = oController.oRouteArguments;
-            oController.oRouteArguments = oEvent.getParameters().arguments;
+            // Avoid double route match
+            if(oEvent.getParameter('name') !== 'master') {
+                // Remember old arguments to avoid redundant ajax calls on internal route change
+                oController.oOldRouteArguments = oController.oRouteArguments;
+                oController.oRouteArguments = oEvent.getParameters().arguments;
+            }
         });
         this.oAppController = sap.ui.getCore().byId('roleEditorApp').getController();
         this.oAppController.oEventBus.subscribe('selectRoles', function () {
@@ -28,7 +31,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     oView.oIconTabBar.setSelectedKey(sTab);
                 }
             }
-            // FIXME: oRouteArguments.id is not valid in case new role selected from master view and not from URL
+
             if(!oController.oOldRouteArguments ||
                 oController.oOldRouteArguments.id !== oController.oRouteArguments.id
             ) {

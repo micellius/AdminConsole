@@ -24,11 +24,18 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                 loadedTabsCouter = 0;
 
             function onTabLoaded() {
-                var sTab = oController.oRouteArguments.tab || 'roles';
+                var sTab = oController.oRouteArguments.tab || 'roles',
+                    numberOfItems,
+                    oModel = oView.getModel();
 
                 loadedTabsCouter++;
                 if(loadedTabsCouter === 5) {
                     oView.oIconTabBar.setSelectedKey(sTab);
+                    numberOfItems = oView.oIconTabBar.getItems().filter(function(item) {
+                        return item.getKey() === sTab;
+                    })[0].getContent()[0].getItems().length;
+                    oModel.setProperty('/headerNumber', numberOfItems);
+                    oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
                 }
             }
 

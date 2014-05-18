@@ -22,7 +22,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.master.Master",
                 oRole = oData.roles[i];
                 if(oRole.roleName === sRoleName) {
                     oData.roles.splice(i, 1);
-                    controller.getView().getModel().refresh();
+                    controller.getView().getModel().refresh(true);
                     break;
                 }
             }

@@ -16,11 +16,6 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.App", {
 
         this.oSplitApp = new sap.m.SplitApp("splitControl");
 
-        this.oPage = new sap.m.Page({
-            showHeader: false,
-            content: [this.oSplitApp]
-        });
-
-        return this.oPage;
+        return this.oSplitApp;
     }
 });

@@ -11,13 +11,14 @@ jQuery.sap.declare("tests.adminconsole.apps.RoleEditor.Component");
 sap.ui.core.UIComponent.extend("tests.adminconsole.apps.RoleEditor.Component", {
     metadata : {
         version : "@version@",
-
         library : "tests.adminconsole.apps.RoleEditor",
         includes : [ "styles/style.css" ],
-
         dependencies : {
             libs : [ "sap.m", "sap.ui.layout", "sap.ui.commons" ],
             components : []
+        },
+        config: {
+            fullWidth: true
         },
         routing : {
             config : {

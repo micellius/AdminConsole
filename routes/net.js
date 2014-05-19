@@ -365,32 +365,34 @@ function getAllRoles() {
     };
 }
 
-function getRolesByGrantee(opts) {
+var rolesByGrantee = [
+    {
+        "grantee":"SYSTEM",
+        "granteeType":"USER",
+        "roleName":"PUBLIC",
+        "grantor":"SYS",
+        "isGrantable":"FALSE",
+        "objectName":"PUBLIC",
+        "objectType":"ROLE",
+        "state":"edit",
+        "objectId":"PUBLIC-SYS"
+    },
+    {
+        "grantee":"SYSTEM",
+        "granteeType":"USER",
+        "roleName":"sap.hana.uis.db::SITE_USER",
+        "grantor":"_SYS_REPO",
+        "isGrantable":"FALSE",
+        "objectName":"sap.hana.uis.db::SITE_USER",
+        "objectType":"ROLE",
+        "state":"edit",
+        "objectId":"sap.hana.uis.db::SITE_USER-_SYS_REPO"
+    }
+];
+
+function getRolesByGrantee() {
     return {
-        "roles":[
-            {
-                "grantee":opts.grantee,
-                "granteeType":"USER",
-                "roleName":"PUBLIC",
-                "grantor":"SYS",
-                "isGrantable":"FALSE",
-                "objectName":"PUBLIC",
-                "objectType":"ROLE",
-                "state":"edit",
-                "objectId":"PUBLIC-SYS"
-            },
-            {
-                "grantee":opts.grantee,
-                "granteeType":"USER",
-                "roleName":"sap.hana.uis.db::SITE_USER",
-                "grantor":"_SYS_REPO",
-                "isGrantable":"FALSE",
-                "objectName":"sap.hana.uis.db::SITE_USER",
-                "objectType":"ROLE",
-                "state":"edit",
-                "objectId":"sap.hana.uis.db::SITE_USER-_SYS_REPO"
-            }
-        ]
+        "roles": rolesByGrantee
     };
 }
 
@@ -1179,8 +1181,9 @@ function getSqlObjects() {
 }
 
 function updatePrivilege4Role(opts) {
+    var i, l, item;
 
-    if(opts.roleInfo.state === 'new') {
+    if(opts.roleInfo && opts.roleInfo.state === 'new') {
         roles.push({
             "roleId":(''+(new Date()).getTime()).substr(7),
             "roleName":opts.roleInfo.roleName,
@@ -1188,6 +1191,39 @@ function updatePrivilege4Role(opts) {
             "roleCreator":"SYSTEM",
             "objectName":opts.roleInfo.roleName
         });
+    } else if(opts.roleInfo && opts.roleInfo.state === 'edit') {
+        for(i=0, l=opts.privilegesToGrant.length; i<l; i++) {
+            item = opts.privilegesToGrant[i];
+            switch(item.objectType) {
+                case 'ROLE':
+                    rolesByGrantee.push({
+                        grantee: opts.roleInfo.roleName,
+                        granteeType: "USER",
+                        grantor: item.grantor,
+                        isGrantable: item.isGrantable,
+                        objectId: item.objectId,
+                        objectName: item.objectName,
+                        objectType: item.objectType,
+                        roleName: item.roleName,
+                        state: "edit"
+                    });
+                    break;
+                case 'SYSTEMPRIVILEGE':
+                    break;
+                case 'SCHEMA':
+                case 'TABLE':
+                case 'VIEW':
+                case 'MONITORVIEW':
+                case 'PROCEDURE':
+                case 'FUNCTION':
+                case 'SEQUENCE':
+                    break;
+                case 'REPO':
+                    break;
+                case 'APPLICATIONPRIVILEGE':
+                    break;
+            }
+        }
     }
 
     return {
@@ -1873,14 +1909,17 @@ exports.post = function(req, res){
         case 'sap.hana.ide.core.plugins.security.server.hana.getPrivilegesByGrantee':
             res.json(getPrivilegesByGrantee(req.body.inputObject));
             break;
+        // Detailed Privileges
         case 'sap.hana.ide.core.base.server.getDetailedPrivilegesByGrantee':
         case 'sap.hana.ide.core.plugins.security.server.hana.getDetailedPrivilegesByGrantee':
             res.json(getDetailedPrivilegesByGrantee(req.body.inputObject));
             break;
+        // SQL Privileges Search
         case 'sap.hana.ide.core.base.server.getSqlObjects':
         case 'sap.hana.ide.core.plugins.security.server.hana.getSqlObjects':
             res.json(getSqlObjects(req.body.inputObject));
             break;
+        // Create / Update Role
         case 'sap.hana.ide.core.base.server.updatePrivilege4Role':
         case 'sap.hana.ide.core.plugins.security.server.hana.updatePrivilege4Role':
             res.json(updatePrivilege4Role(req.body.inputObject));

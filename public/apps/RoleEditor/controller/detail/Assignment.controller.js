@@ -21,82 +21,19 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             var aRoles = arguments[2],
                 oRole,
                 oData,
-                oView = this.getView(),
-                loadedTabsCouter = 0,
-                API = tests.adminconsole.apps.RoleEditor.utils.API;
-
-            function onTabLoaded() {
-                var sTab = oController.oRouteArguments.tab || 'roles',
-                    numberOfItems,
-                    oModel = oView.getModel();
-
-                loadedTabsCouter++;
-                if(loadedTabsCouter === 5) {
-                    oView.oIconTabBar.setSelectedKey(sTab);
-                    numberOfItems = oView.oIconTabBar.getItems().filter(function(item) {
-                        return item.getKey() === sTab;
-                    })[0].getContent()[0].getItems().length;
-                    oModel.setProperty('/headerNumber', numberOfItems);
-                    oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
-                }
-            }
+                oView = this.getView();
 
             if(!oController.oOldRouteArguments ||
                 oController.oOldRouteArguments.id !== oController.oRouteArguments.id
             ) {
-
                 this.oRole = oRole = aRoles[0];
-
                 if(oRole) {
                     oData = {
                         headerTitle: oRole.objectName,
                         headerDesctiption: oRole.roleId
                     };
-
                     oView.setModel(new sap.ui.model.json.JSONModel(oData));
-
-                    // Granted Roles
-                    this._loadData(oView.oTableRoles, {
-                        "absoluteFunctionName": API.getAbsoluteFunctionName("getRolesByGrantee"),
-                        "inputObject": {
-                            "grantee": oRole.objectName
-                        }
-                    }).done(onTabLoaded);
-
-                    // System Privileges
-                    this._loadData(oView.oTableSystem, {
-                        "absoluteFunctionName": API.getAbsoluteFunctionName("getSystemPrivilegesByGrantee"),
-                        "inputObject": {
-                            "grantee": oRole.objectName
-                        }
-                    }).done(onTabLoaded);
-
-                    // SQL Privileges
-                    this._loadData(oView.oTableSql, {
-                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
-                        "inputObject": {
-                            "grantee": oRole.objectName,
-                            "type": "object"
-                        }
-                    }).done(onTabLoaded);
-
-                    // Package
-                    this._loadData(oView.oTablePackage, {
-                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
-                        "inputObject": {
-                            "grantee": oRole.objectName,
-                            "type": "package"
-                        }
-                    }).done(onTabLoaded);
-
-                    // Application
-                    this._loadData(oView.oTableApplication, {
-                        "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
-                        "inputObject": {
-                            "grantee": oRole.objectName,
-                            "type": "application"
-                        }
-                    }).done(onTabLoaded);
+                    oController._reload();
                 }
             } else {
                 if(oView.oIconTabBar.getSelectedKey() !== oController.oRouteArguments.tab) {
@@ -120,8 +57,10 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
     },
 
     onSavePress: function() {
-        console.log('Save:', this.getView().getModel().getData());
-        this.toggleEditMode();
+        var oController = this;
+        oController._save().done(function() {
+            oController.toggleEditMode();
+        });
     },
 
     onCancelPress: function() {
@@ -240,39 +179,132 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
     addObject: function(oEvent) {
         var aSelectedItems = oEvent.getParameter('selectedItems'),
-            privilegesToGrant,
-            privilegesToGrantIds,
             oModel = this.getView().getModel(),
-            oTableModel, sTableModelRoot, oData, sType, sPath, oPrivilege,
+            oTableModel, sTableModelRoot, oData, sType, oPrivilege, aObjectNames,
             i, l, createPrivilege;
 
+        // Key of selected tab
         sType = this.getView().oIconTabBar.getSelectedKey();
-        sPath = '/modified_' + sType + '_privilegesToGrant';
+        // Model of the table located in selected tab
         oTableModel = this.getView().oIconTabBar.getItems().filter(function(item) {
             return item.getKey() === sType;
         })[0].getContent()[0].getModel();
+        // Property in the table model containing all items
         sTableModelRoot = oEvent.oSource.getModel().getData().opts.root.substring(1);
-        createPrivilege = this._privelegeToGrantFactory(sType);
-        privilegesToGrant = (oModel.getProperty(sPath) || []);
-        privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
-            return item.objectId;
+        // Names of the objects already added to the table
+        aObjectNames = oTableModel.getData()[sTableModelRoot].map(function(item) {
+            return item.objectName
         });
+        // Function to be used to create privilege
+        createPrivilege = this._privelegeToGrantFactory(sType);
 
+        // Iterate over selected items
         for(i=0, l=aSelectedItems.length; i<l; i++) {
+            // Data binded to selected item
             oData = aSelectedItems[i].getBindingContext().getObject();
+            // Create privilege object
             oPrivilege = createPrivilege(oData);
-            if(privilegesToGrantIds.indexOf(oPrivilege.objectId) === -1) { // Don't add duplicates
-                privilegesToGrant.push(oPrivilege);
+            if(aObjectNames.indexOf(oPrivilege.objectName) === -1) {
+                // Add item to table
+                oTableModel.getData()[sTableModelRoot].push(oPrivilege);
+                // Add privilege object to save request payload
+                this._addPrivilegesToGrant(sType, oPrivilege);
             }
         }
 
-        if(privilegesToGrant.length > 0) {
-            oModel.setProperty(sPath, privilegesToGrant);
-            oModel.setProperty('/isModified', true);
-            oTableModel.getData()[sTableModelRoot] = oTableModel.getData()[sTableModelRoot].concat(privilegesToGrant);
-            oTableModel.refresh(true);
+        // Exit from edit mode
+        oModel.setProperty('/isModified', true);
+        // Update bindings and UI
+        oTableModel.refresh(true);
+    },
+
+    deleteObject: function(opts) {
+        var sType,
+            oTable,
+            oTableModel,
+            oTableData,
+            aSelectedItems,
+            oPrivilege,
+            oModel,
+            sTableModelRoot,
+            i, l;
+
+        // Root view model
+        oModel = this.getView().getModel();
+        // Key of selected tab
+        sType = this.getView().oIconTabBar.getSelectedKey();
+        // Table located in selected tab
+        oTable = this.getView().oIconTabBar.getItems().filter(function(item) {
+            return item.getKey() === sType;
+        })[0].getContent()[0];
+        // Table model
+        oTableModel = oTable.getModel();
+        // Property in the table model containing all items
+        sTableModelRoot = opts.root.substring(1);
+        // Selected items in the table located in selected tab
+        aSelectedItems = oTable.getSelectedItems();
+        // Table data
+        oTableData = oTableModel.getData()[sTableModelRoot];
+
+        for(i=0, l=aSelectedItems.length; i<l; i++) {
+            // Data binded to selected item
+            oPrivilege = aSelectedItems[i].getBindingContext().getObject();
+            // Add privilege object to save request payload
+            this._addPrivilegesToRevoke(sType, oPrivilege);
+            // Remove item from table data model
+            oTableData.splice(oTableData.indexOf(oPrivilege),1);
         }
 
+        // Clear table selection
+        oTable.removeSelections();
+        // Update bindings and UI
+        oTableModel.refresh(true);
+        // Exit from edit mode
+        oModel.setProperty('/isModified', true);
+    },
+
+    _addPrivilegesToGrant: function(sType, oPrivilege) {
+        var oModel = this.getView().getModel(),
+            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
+            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
+                return item.objectId;
+            }),
+            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
+            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
+                return item.objectId;
+            }),
+            index;
+
+        if((index = privilegesToRevokeIds.indexOf(oPrivilege.objectId)) !== -1) {
+            privilegesToRevoke.splice(index, 1);
+        } else if(privilegesToGrantIds.indexOf(oPrivilege.objectId) === -1) {
+            privilegesToGrant.push(oPrivilege);
+        }
+
+        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
+        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
+    },
+
+    _addPrivilegesToRevoke: function(sType, oPrivilege) {
+        var oModel = this.getView().getModel(),
+            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
+            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
+                return item.objectId;
+            }),
+            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
+            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
+                return item.objectId;
+            }),
+            index;
+
+        if((index = privilegesToGrantIds.indexOf(oPrivilege.objectId)) !== -1) {
+            privilegesToGrant.splice(index, 1);
+        } else if(privilegesToRevokeIds.indexOf(oPrivilege.objectId) === -1) {
+            privilegesToRevoke.push(oPrivilege);
+        }
+
+        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
+        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
     },
 
     getOpts: function(sKey) {
@@ -322,16 +354,152 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         }
     },
 
-    _reset: function() {
+    _save: function() {
+        var oController = this,
+            aTypes = ['roles', 'system', 'sql', 'package', 'application'],
+            sType, i, l, inputObject,
+            API = tests.adminconsole.apps.RoleEditor.utils.API,
+            oDeferred,
+            oModel,
+            oData = this.getView().getModel().getData();
+
+        oDeferred = $.Deferred();
+
+        oModel = new sap.ui.model.json.JSONModel();
+
+        oModel.attachRequestCompleted(function() {
+            oController._reset(true); // Apply changes and delete temporary objects from model
+            oController._reload();
+            oDeferred.resolve(oModel.getData());
+        }, this);
+
+        inputObject = {
+            privilegesToGrant: [],
+            privilegesToRevoke: [],
+            roleInfo: {
+                roleName: this.oRole.objectName,
+                state: 'edit'
+            }
+        };
+
+        for(i=0, l=aTypes.length; i<l; i++) {
+            sType = aTypes[i];
+            inputObject.privilegesToGrant = inputObject.privilegesToGrant.concat(oData['modified_'+sType+'_privilegesToGrant'] || []);
+            inputObject.privilegesToRevoke = inputObject.privilegesToRevoke.concat(oData['modified_'+sType+'_privilegesToRevoke'] || []);
+        }
+
+        this.oAppController.getCsrfToken(function(csrfToken) {
+            var oParams,
+                oHeaders;
+
+            oParams = JSON.stringify({
+                absoluteFunctionName: API.getAbsoluteFunctionName('updatePrivilege4Role'),
+                inputObject: inputObject
+            });
+
+            oHeaders = {
+                "X-CSRF-Token": csrfToken,
+                "x-sap-dont-debug": 1,
+                "Content-Type": "application/json"
+            };
+
+            oModel.loadData(
+                API.netServiceUrl,                          // URL
+                oParams,                                    // parameters map
+                true,                                       // async
+                "POST",                                     // method
+                false,                                      // merge
+                false,                                      // cache
+                oHeaders                                    // request headers
+            );
+        });
+
+        return oDeferred.promise();
+    },
+
+    _reload: function() {
+        var oController = this,
+            oView = this.getView(),
+            API = tests.adminconsole.apps.RoleEditor.utils.API,
+            loadedTabsCouter = 0,
+            oRole = oController.oRole;
+
+        function onTabLoaded() {
+            var sTab = oController.oRouteArguments.tab || 'roles',
+                numberOfItems,
+                oModel = oView.getModel();
+
+            loadedTabsCouter++;
+            if(loadedTabsCouter === 5) {
+                oView.oIconTabBar.setSelectedKey(sTab);
+                numberOfItems = oView.oIconTabBar.getItems().filter(function(item) {
+                    return item.getKey() === sTab;
+                })[0].getContent()[0].getItems().length;
+                oModel.setProperty('/headerNumber', numberOfItems);
+                oModel.setProperty('/headerUnit', numberOfItems === 1 ? "Object" : "Objects");
+            }
+        }
+
+        // Granted Roles
+        this._loadData(oView.oTableRoles, {
+            "absoluteFunctionName": API.getAbsoluteFunctionName("getRolesByGrantee"),
+            "inputObject": {
+                "grantee": oRole.objectName
+            }
+        }).done(onTabLoaded);
+
+        // System Privileges
+        this._loadData(oView.oTableSystem, {
+            "absoluteFunctionName": API.getAbsoluteFunctionName("getSystemPrivilegesByGrantee"),
+            "inputObject": {
+                "grantee": oRole.objectName
+            }
+        }).done(onTabLoaded);
+
+        // SQL Privileges
+        this._loadData(oView.oTableSql, {
+            "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
+            "inputObject": {
+                "grantee": oRole.objectName,
+                "type": "object"
+            }
+        }).done(onTabLoaded);
+
+        // Package
+        this._loadData(oView.oTablePackage, {
+            "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
+            "inputObject": {
+                "grantee": oRole.objectName,
+                "type": "package"
+            }
+        }).done(onTabLoaded);
+
+        // Application
+        this._loadData(oView.oTableApplication, {
+            "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
+            "inputObject": {
+                "grantee": oRole.objectName,
+                "type": "application"
+            }
+        }).done(onTabLoaded);
+    },
+
+    _reset: function(bApplyChanges) {
         var oModel = this.getView().getModel();
         this.getView().oIconTabBar.getItems().forEach(function(item) {
             var oTableModel = item.getContent()[0].getModel(),
                 sType = item.getKey(),
                 sRoot = this.getOpts(sType).root.substring(1);
 
-            oTableModel.getData()[sRoot] = oTableModel.getData()[sRoot].filter(function(item) {
-                return item.state !== 'new';
-            });
+            if(bApplyChanges) {
+                oTableModel.getData()[sRoot].forEach(function(item) {
+                    item.state = 'edit';
+                });
+            } else {
+                oTableModel.getData()[sRoot] = oTableModel.getData()[sRoot].filter(function (item) {
+                    return item.state !== 'new';
+                });
+            }
 
             oTableModel.refresh(true);
 
@@ -443,7 +611,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                 oParams,                                    // parameters map
                 true,                                       // async
                 "POST",                                     // method
-                true,                                       // merge
+                false,                                      // merge
                 false,                                      // cache
                 oHeaders                                    // request headers
             );

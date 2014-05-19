@@ -11,7 +11,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
     createContent: function (oController) {
 
         // Workaround for UI5 bug - itemPress event never fired
-        $(document).on('click', '.sapMListTbl.sapMListUl .sapMListTblRow', function(evt) {
+        $(document).on('click', '.assignedObjects .sapMListTbl.sapMListUl .sapMListTblRow', function(evt) {
             var isCheckBox = ($(evt.target).closest('.sapMCbMark').length > 0),
                 oItem = sap.ui.getCore().byId($(this).closest('tr').attr('id')),
                 oTable = sap.ui.getCore().byId($(this).closest('table').parent().attr('id'));
@@ -48,6 +48,7 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                         }),
                         new sap.m.Button({
                             visible: editModeBinding(),
+                            enabled: false,
                             icon: "sap-icon://action"
                         }),
                         new sap.m.Button({
@@ -59,7 +60,10 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                         }),
                         new sap.m.Button({
                             visible: editModeBinding(),
-                            icon: "sap-icon://delete"
+                            icon: "sap-icon://delete",
+                            press: function() {
+                                oController.deleteObject(opts);
+                            }
                         }),
                         new sap.m.ToolbarSpacer(),
                         new sap.m.SearchField({
@@ -95,6 +99,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                     }
                 }
             });
+
+            table.addStyleClass('assignedObjects');
 
             table.bindProperty("mode", {
                 path: "/editMode",
@@ -296,19 +302,14 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             }
         });
 
-        this.oDeleteButton = new sap.m.Button({
-            visible: editModeBinding(true),
-            text: "Delete",
-            press: [oController.onDeletePress, oController]
-        });
-
-        this.oApplyButton = new sap.m.Button({
-            visible: editModeBinding(),
-            text: "Apply"
-        });
-
         this.oSaveButton = new sap.m.Button({
             visible: editModeBinding(),
+            enabled: {
+                path: '/isModified',
+                formatter: function(isModified) {
+                    return !!isModified; // Convert to boolean with default false
+                }
+            },
             text: "Save",
             press: [oController.onSavePress, oController]
         });
@@ -334,8 +335,6 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             footer: new sap.m.Bar({
                 contentRight: [
                     this.oEditButton,
-                    this.oDeleteButton,
-                    this.oApplyButton,
                     this.oSaveButton,
                     this.oCancelButton
                 ]

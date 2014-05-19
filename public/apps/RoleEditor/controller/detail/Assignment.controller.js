@@ -145,15 +145,15 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
     addDialogSearch: function(sText) {
         var oView = this.getView(),
             oModel = oView.oAddDialog.getModel(),
-            opts = oModel.getData().opts;
+            opts = oModel.getData().opts,
+            API = tests.adminconsole.apps.RoleEditor.utils.API;
 
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
-                oHeaders,
-                API = tests.adminconsole.apps.RoleEditor.utils.API;
+                oHeaders;
 
             oParams = {
-                "absoluteFunctionName": opts.addSearchFunction,
+                "absoluteFunctionName": API.getAbsoluteFunctionName(opts.addSearchFunction),
                 "inputObject":{}
             };
             oParams.inputObject[opts.addSearchName] = sText;
@@ -314,7 +314,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     title: "Granted Roles",
                     root: "/roles",
                     addSearchRoot: "/roles",
-                    addSearchFunction: "sap.hana.ide.core.base.server.getAllRoles",
+                    addSearchFunction: "getAllRoles",
                     addSearchName: "roleName"
                 };
             case 'system':
@@ -322,7 +322,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     title: "System Privileges",
                     root: "/privileges",
                     addSearchRoot: "/systems",
-                    addSearchFunction: "sap.hana.ide.core.base.server.getSystemPrivileges",
+                    addSearchFunction: "getSystemPrivileges",
                     addSearchName: "sysName"
                 };
             case 'sql':
@@ -330,7 +330,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     title: "SQL Privileges",
                     root: "/privileges",
                     addSearchRoot: "/objects",
-                    addSearchFunction: "sap.hana.ide.core.base.server.getSqlObjects",
+                    addSearchFunction: "getSqlObjects",
                     addSearchName: "objectName"
                 };
             case 'package':
@@ -338,7 +338,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     title: "Package Privileges",
                     root: "/privileges",
                     addSearchRoot: "/packageInfos",
-                    addSearchFunction: "sap.hana.ide.core.base.server.getPackages",
+                    addSearchFunction: "getPackages",
                     addSearchName: "packageName"
                 };
             case 'application':
@@ -346,7 +346,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
                     title: "Application Privileges",
                     root: "/privileges",
                     addSearchRoot: "/apps",
-                    addSearchFunction: "sap.hana.ide.core.base.server.getApplicationPrivileges",
+                    addSearchFunction: "getApplicationPrivileges",
                     addSearchName: "appName"
                 };
             default:

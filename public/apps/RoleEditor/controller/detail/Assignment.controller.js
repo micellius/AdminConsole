@@ -97,6 +97,7 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
     onPopoverOkPress: function() {
         this.getView().oPopover.close();
+        this.getView().getModel().setProperty('/isModified', true);
     },
 
     search: function(oTable, sText) {

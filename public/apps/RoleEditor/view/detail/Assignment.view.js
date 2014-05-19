@@ -187,6 +187,9 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                                     formatter: function(sObjectId) {
                                         return !!sObjectId; // convert to boolean
                                     }
+                                },
+                                select: function(oEvent) {
+                                    oController.onDetailedPrivilegeSelect(this, oEvent);
                                 }
                             }), new sap.m.Text({
                                 text: '{privilege}'

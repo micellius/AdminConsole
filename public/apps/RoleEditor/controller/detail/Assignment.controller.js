@@ -72,9 +72,31 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         this.oAppController.oEventBus.publish('deleteSelectedRoles');
     },
 
+    onDetailedPrivilegeSelect: function(oCheckBox) {
+        var oParentPrivilege,
+            oPrivilege,
+            oData,
+            sPrivilege,
+            bIsGrantable,
+            sType;
+
+        sType = this.getView().oIconTabBar.getSelectedKey();
+        oData = oCheckBox.getBindingContext().getObject();
+        sPrivilege = oData.privilege;
+        bIsGrantable = oData.isGrantable;
+        oParentPrivilege = this.getView().oPopover.getModel().getData().item;
+        oPrivilege = $.extend({}, oParentPrivilege, {
+            privilege: sPrivilege,
+            isGrantable: bIsGrantable,
+            objectId: [oParentPrivilege.objectName, oParentPrivilege.grantor, sPrivilege].join('-'),
+            state: 'new'
+        });
+
+        this['_addPrivilegesTo' + (oCheckBox.getSelected() ? 'Grant' : 'Revoke')](sType, oPrivilege);
+    },
+
     onPopoverOkPress: function() {
-        // TODO
-        console.log("onPopoverOkPress", this.getView().oPopover.getModel().getData());
+        this.getView().oPopover.close();
     },
 
     search: function(oTable, sText) {
@@ -97,13 +119,49 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             oView = this.getView(),
             oModel;
 
+        // Apply defaults
         oView.oPopover.setModel(oModel = new sap.ui.model.json.JSONModel({
             title: oData.objectName,
+            item: oData,
             editMode: oView.getModel().getProperty('/editMode'),
             detailedPrivileges: Privileges.getDefaultPrivilegesByObjectType(oData.objectType)
         }));
 
+        // Apply persisted data
         this._loadDetailedPrivileges(oModel, oData, this.oRole.objectName).done(function() {
+            var index,
+                aGranted,
+                aGrantedPrivileges,
+                aRevoked,
+                aRevokedPrivileges,
+                sType;
+
+            sType = oView.oIconTabBar.getSelectedKey();
+            aGranted = oView.getModel().getData()['modified_'+sType+'_privilegesToGrant'] || [];
+            aGrantedPrivileges = aGranted.map(function(item) {
+                return item.privilege;
+            });
+            aRevoked = oView.getModel().getData()['modified_'+sType+'_privilegesToRevoke'] || [];
+            aRevokedPrivileges = aRevoked.map(function(item) {
+                return item.privilege;
+            });
+
+            // Apply not persisted changes
+            oModel.getData().detailedPrivileges.forEach(function(item, idx, detailedPrivileges) {
+                if((index = aGrantedPrivileges.indexOf(item.privilege)) !== -1
+                    && aGranted[index].objectName === oData.objectName
+                ) {
+                    $.extend(item, aGranted[index]);
+                } else if((index = aRevokedPrivileges.indexOf(item.privilege)) !== -1) {
+                    detailedPrivileges[idx] = {
+                        privilege: item.privilege,
+                        isGrantable: false
+                    }
+                }
+
+                oView.oPopover.getModel().refresh(true);
+            });
+
             oView.oPopover.openBy(oItem);
         });
 

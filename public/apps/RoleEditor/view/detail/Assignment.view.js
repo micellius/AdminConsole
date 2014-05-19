@@ -152,9 +152,9 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
         // Popover
 
         this.oPopover = new sap.m.ResponsivePopover({
-            title: "Object Priveleges",
+            title: "Object Privileges",
             modal: true,
-            offsetX: -300,
+            offsetX: -500,
             content: [new sap.m.Table({
                 headerToolbar: new sap.m.Toolbar({
                     content: [
@@ -207,12 +207,16 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
             })],
             beginButton: new sap.m.Button({
                 text: "OK",
-                press: function() {
-                    oView.oPopover.close();
-                }
+                visible: editModeBinding(),
+                press: [oController.onPopoverOkPress, oController]
             }),
             endButton: new sap.m.Button({
-                text: "Cancel",
+                text: {
+                    path: '/editMode',
+                    formatter: function(bEditMode) {
+                        return bEditMode ? 'Cancel' : 'Close'
+                    }
+                },
                 press: function() {
                     oView.oPopover.close();
                 }

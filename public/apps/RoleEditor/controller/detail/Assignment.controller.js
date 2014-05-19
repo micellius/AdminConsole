@@ -72,6 +72,11 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         this.oAppController.oEventBus.publish('deleteSelectedRoles');
     },
 
+    onPopoverOkPress: function() {
+        // TODO
+        console.log("onPopoverOkPress", this.getView().oPopover.getModel().getData());
+    },
+
     search: function(oTable, sText) {
         var oBinding = oTable.getBinding("items"),
             oFilter;

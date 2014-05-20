@@ -286,7 +286,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
     },
 
     deleteObject: function(opts) {
-        var sType,
+        var oController,
+            sType,
             oTable,
             oTableModel,
             oTableData,
@@ -294,8 +295,11 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             oPrivilege,
             oModel,
             sTableModelRoot,
-            i, l;
+            i, l, Privileges;
 
+        // Define Aliases
+        oController = this;
+        Privileges = tests.adminconsole.apps.RoleEditor.utils.Privileges;
         // Root view model
         oModel = this.getView().getModel();
         // Key of selected tab
@@ -316,8 +320,19 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         for(i=0, l=aSelectedItems.length; i<l; i++) {
             // Data binded to selected item
             oPrivilege = aSelectedItems[i].getBindingContext().getObject();
-            // Add privilege object to save request payload
-            this._addPrivilegesToRevoke(sType, oPrivilege);
+            if(Privileges.getDefaultPrivilegesByObjectType(oPrivilege.objectType).length === 0) {
+                // Add privilege to revoke
+                this._addPrivilegesToRevoke(sType, oPrivilege);
+            } else {
+                // Collect all assigned detailed privileges to revoke
+                this._getDetailedPrivileges(oPrivilege, this.oRole.objectName, function(data) {
+                    var oPrivilege, i, l;
+                    for(i=0, l=data.detailedPrivileges.length; i<l; i++) {
+                        oPrivilege = data.detailedPrivileges[i];
+                        oController._addPrivilegesToRevoke(sType, oPrivilege);
+                    }
+                });
+            }
             // Remove item from table data model
             oTableData.splice(oTableData.indexOf(oPrivilege),1);
         }
@@ -328,50 +343,6 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         oTableModel.refresh(true);
         // Exit from edit mode
         oModel.setProperty('/isModified', true);
-    },
-
-    _addPrivilegesToGrant: function(sType, oPrivilege) {
-        var oModel = this.getView().getModel(),
-            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
-            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
-                return item.objectId;
-            }),
-            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
-            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
-                return item.objectId;
-            }),
-            index;
-
-        if((index = privilegesToRevokeIds.indexOf(oPrivilege.objectId)) !== -1) {
-            privilegesToRevoke.splice(index, 1);
-        } else if(privilegesToGrantIds.indexOf(oPrivilege.objectId) === -1) {
-            privilegesToGrant.push(oPrivilege);
-        }
-
-        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
-        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
-    },
-
-    _addPrivilegesToRevoke: function(sType, oPrivilege) {
-        var oModel = this.getView().getModel(),
-            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
-            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
-                return item.objectId;
-            }),
-            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
-            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
-                return item.objectId;
-            }),
-            index;
-
-        if((index = privilegesToGrantIds.indexOf(oPrivilege.objectId)) !== -1) {
-            privilegesToGrant.splice(index, 1);
-        } else if(privilegesToRevokeIds.indexOf(oPrivilege.objectId) === -1) {
-            privilegesToRevoke.push(oPrivilege);
-        }
-
-        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
-        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
     },
 
     getOpts: function(sKey) {
@@ -419,6 +390,50 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             default:
                 return {};
         }
+    },
+
+    _addPrivilegesToGrant: function(sType, oPrivilege) {
+        var oModel = this.getView().getModel(),
+            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
+            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
+                return item.objectId;
+            }),
+            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
+            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
+                return item.objectId;
+            }),
+            index;
+
+        if((index = privilegesToRevokeIds.indexOf(oPrivilege.objectId)) !== -1) {
+            privilegesToRevoke.splice(index, 1);
+        } else if(privilegesToGrantIds.indexOf(oPrivilege.objectId) === -1) {
+            privilegesToGrant.push(oPrivilege);
+        }
+
+        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
+        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
+    },
+
+    _addPrivilegesToRevoke: function(sType, oPrivilege) {
+        var oModel = this.getView().getModel(),
+            privilegesToGrant = oModel.getProperty('/modified_' + sType + '_privilegesToGrant') || [],
+            privilegesToGrantIds = $.map(privilegesToGrant, function(item) {
+                return item.objectId;
+            }),
+            privilegesToRevoke = oModel.getProperty('/modified_' + sType + '_privilegesToRevoke') || [],
+            privilegesToRevokeIds = $.map(privilegesToRevoke, function(item) {
+                return item.objectId;
+            }),
+            index;
+
+        if((index = privilegesToGrantIds.indexOf(oPrivilege.objectId)) !== -1) {
+            privilegesToGrant.splice(index, 1);
+        } else if(privilegesToRevokeIds.indexOf(oPrivilege.objectId) === -1) {
+            privilegesToRevoke.push(oPrivilege);
+        }
+
+        oModel.setProperty('/modified_' + sType + '_privilegesToGrant', privilegesToGrant);
+        oModel.setProperty('/modified_' + sType + '_privilegesToRevoke', privilegesToRevoke);
     },
 
     _save: function() {
@@ -747,6 +762,31 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         });
 
         return oDeferred.promise();
+    },
+
+    _getDetailedPrivileges: function(oData, sRoleName, callback) {
+        var API = tests.adminconsole.apps.RoleEditor.utils.API;
+        this.oAppController.getCsrfToken(function(csrfToken) {
+            $.ajax({
+                type: "POST",
+                url: API.netServiceUrl,
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "x-sap-dont-debug": 1,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    absoluteFunctionName: API.getAbsoluteFunctionName("getDetailedPrivilegesByGrantee"),
+                    inputObject: {
+                        grantee: sRoleName,
+                        objectName: oData.objectName,
+                        objectType: oData.objectType
+                    }
+                })
+            }).done(function (data) {
+                callback(data);
+            });
+        });
     }
 
 });

@@ -1,0 +1,15 @@
+.sapUiBLy {
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.sapUiRFLRow .sapUiRFLContainer {
+    vertical-align: middle;
+}
+.sapMPanel .sapMTB{
+    background-color:#fff;
+}
+.sapMPanel.collapsed .sapMPanelContent{
+    height:0;
+    padding:0;
+    overflow:hidden;
+}

@@ -18,6 +18,7 @@ var session = require('express-session');
 var stylus = require('stylus');
 var index = require('./routes/index.js');
 var RoleEditor = require('./routes/RoleEditor.js');
+var UserEditor = require('./routes/UserEditor.js');
 var net = require('./routes/net.js');
 var csrf = require('./routes/csrf.js');
 
@@ -45,6 +46,7 @@ app.use('/resources', express.static(__dirname + '/bower_components/openui5-bowe
 
 app.get('/', index.get);
 app.get('/RoleEditor', RoleEditor.get);
+app.get('/UserEditor', UserEditor.get);
 app.post('/sap/hana/ide/core/base/server/net.xsjs', net.post);
 app.head('/sap/hana/xs/ide/editor/server/csrf.xsjs', csrf.head);
 

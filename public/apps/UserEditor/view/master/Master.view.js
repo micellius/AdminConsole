@@ -1,11 +1,11 @@
-sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
+sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
 	getControllerName: function() {
-		return "tests.adminconsole.apps.RoleEditor.controller.master.Master";
+		return "tests.adminconsole.apps.UserEditor.controller.master.Master";
 	},
 	createContent : function(oController) {
 
         // Workaround for UI5 bug - itemPress event never fired
-        $(document).off('click.roleeditor').on('click.roleeditor', '.sapMLIB.sapMSLI.sapMLIBTypeInactive', function(evt) {
+        $(document).off('click.usereditor').on('click.usereditor', '.sapMLIB.sapMSLI.sapMLIBTypeInactive', function(evt) {
             var isCheckBox = ($(evt.target).closest('.sapMCbMark').length > 0),
                 oItem = sap.ui.getCore().byId($(this).closest('li').attr('id')),
                 oList = sap.ui.getCore().byId($(this).closest('ul').parent().attr('id'));
@@ -22,29 +22,16 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
         });
 
         this.oList.bindAggregation("items", {
-            path: "/roles",
+            path: "/users",
             factory: function(sId){
                 return new sap.m.StandardListItem(sId, {
-                    title: {
-                        path: "objectName",
-                        formatter: function(objectName) {
-                            var aParts = objectName.split('::');
-                            return aParts.length > 1 ? aParts[aParts.length-1] : objectName;
-                        }
-                    },
-                    tooltip: "{objectName}",
-                    description: {
-                        path: "roleId",
-                        formatter: function(roleId) {
-                            var objectName = this.getBindingContext().getObject().objectName,
-                                aParts = objectName.split('::');
-                            return aParts.length > 1 ? (aParts[0] + ' / ' + roleId) : roleId;
-                        }
-                    },
+                    title: "{userName}",
+                    tooltip: "{userName}",
+                    description: "{userMode}",
                     customData: [
                         new sap.ui.core.CustomData({
                             key: "id",
-                            value: "{roleId}"
+                            value: "{userName}"
                         })
                     ]
                 });
@@ -85,11 +72,11 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
 
         this.oAddButton = new sap.m.Button({
             icon: "sap-icon://add",
-            press: [oController.onAddRolePress, oController]
+            press: [oController.onAddUserPress, oController]
         });
 
         this.oPage = new sap.m.Page({
-            title: "Roles",
+            title: "Users",
             subHeader: this.oBar,
             content: [this.oList],
             footer: new sap.m.Bar({
@@ -102,8 +89,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
             })
         });
 
-        this.oPage.bindProperty("title", "/roles", function(roles) {
-            return "Roles (" + (roles ? roles.length : 0) + ")";
+        this.oPage.bindProperty("title", "/users", function(users) {
+            return "Users (" + (users ? users.length : 0) + ")";
         });
 
 		return this.oPage;

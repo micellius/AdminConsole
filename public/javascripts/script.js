@@ -25,7 +25,10 @@ sap.ui.getCore().attachInit(function() {
                     title: "Users",
                     info: "User Creator & Editor",
                     number: "16",
-                    numberUnit: "Users"
+                    numberUnit: "Users",
+                    press: function() {
+                        location.href = "/UserEditor"
+                    }
                 }), new sap.m.StandardTile({
                     icon: "sap-icon://role",
                     title: "Roles",

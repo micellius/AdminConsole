@@ -526,7 +526,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this._loadData(oView.oTableRoles, {
             "absoluteFunctionName": API.getAbsoluteFunctionName("getRolesByGrantee"),
             "inputObject": {
-                "grantee": oUser.objectName
+                "grantee": oUser.userName
             }
         }).done(onTabLoaded);
 
@@ -534,7 +534,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this._loadData(oView.oTableSystem, {
             "absoluteFunctionName": API.getAbsoluteFunctionName("getSystemPrivilegesByGrantee"),
             "inputObject": {
-                "grantee": oUser.objectName
+                "grantee": oUser.userName
             }
         }).done(onTabLoaded);
 
@@ -542,7 +542,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this._loadData(oView.oTableSql, {
             "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
             "inputObject": {
-                "grantee": oUser.objectName,
+                "grantee": oUser.userName,
                 "type": "object"
             }
         }).done(onTabLoaded);
@@ -551,7 +551,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this._loadData(oView.oTablePackage, {
             "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
             "inputObject": {
-                "grantee": oUser.objectName,
+                "grantee": oUser.userName,
                 "type": "package"
             }
         }).done(onTabLoaded);
@@ -560,7 +560,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this._loadData(oView.oTableApplication, {
             "absoluteFunctionName": API.getAbsoluteFunctionName("getPrivilegesByGrantee"),
             "inputObject": {
-                "grantee": oUser.objectName,
+                "grantee": oUser.userName,
                 "type": "application"
             }
         }).done(onTabLoaded);

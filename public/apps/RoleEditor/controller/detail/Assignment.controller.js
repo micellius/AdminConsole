@@ -242,7 +242,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
     },
 
     addObject: function(oEvent) {
-        var aSelectedItems = oEvent.getParameter('selectedItems'),
+        var Privileges = tests.adminconsole.apps.RoleEditor.utils.Privileges,
+            aSelectedItems = oEvent.getParameter('selectedItems'),
             oModel = this.getView().getModel(),
             oTableModel, sTableModelRoot, oData, sType, oPrivilege, aObjectNames,
             i, l, createPrivilege;
@@ -271,8 +272,10 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
             if(aObjectNames.indexOf(oPrivilege.objectName) === -1) {
                 // Add item to table
                 oTableModel.getData()[sTableModelRoot].push(oPrivilege);
-                // Add privilege object to save request payload
-                this._addPrivilegesToGrant(sType, oPrivilege);
+                if(Privileges.getDefaultPrivilegesByObjectType(oPrivilege.objectType).length === 0) {
+                    // Add privilege object to save request payload
+                    this._addPrivilegesToGrant(sType, oPrivilege);
+                }
             }
         }
 

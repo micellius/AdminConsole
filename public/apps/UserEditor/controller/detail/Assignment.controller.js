@@ -454,13 +454,16 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
             oController._reload();
             oDeferred.resolve(oModel.getData());
         }, this);
-        // TODO check input object
+
         inputObject = {
             privilegesToGrant: [],
             privilegesToRevoke: [],
-            roleInfo: {
-                roleName: this.oUser.objectName,
-                state: 'edit'
+            userInfo: {
+                userName: this.oUser.userName,
+                state: "edit",
+                password: "",
+                samlInfo: [],
+                x509Info: []
             }
         };
 
@@ -473,7 +476,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Assignme
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
                 oHeaders;
-            // TODO check params
+
             oParams = JSON.stringify({
                 absoluteFunctionName: API.getAbsoluteFunctionName('updatePrivilege4User'),
                 inputObject: inputObject

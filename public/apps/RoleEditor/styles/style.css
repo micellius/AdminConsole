@@ -1,3 +1,7 @@
+.sapUiBLy {
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
 .sapUiRFLRow .sapUiRFLContainer {
     vertical-align: middle;
 }

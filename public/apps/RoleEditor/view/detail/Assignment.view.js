@@ -91,6 +91,10 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                     header: new sap.m.Text({
                         text: "Grantor"
                     })
+                }), new sap.m.Column({
+                    header: new sap.m.Text({
+                        text: "Privileges"
+                    })
                 })],
                 itemPress: function(oEvent) {
                     var oItem = oEvent.getParameter('listItem');
@@ -129,6 +133,8 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                             text: '{objectId}'
                         }), new sap.m.Text({
                             text: '{grantor}'
+                        }), new sap.m.Text({
+                            text: ''
                         })]
                     });
                 }
@@ -301,6 +307,16 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
 
         // Toolbar Items
 
+        this.oEditorButton = new sap.m.Button({
+            visible: editModeBinding(true),
+            text: "Role Editor",
+            icon: "sap-icon://slim-arrow-right",
+            iconFirst: false,
+            press: function() {
+                oController.router.navTo("detail", oController.oRouteArguments);
+            }
+        });
+
         this.oEditButton = new sap.m.Button({
             visible: editModeBinding(true),
             text: "Edit",
@@ -340,6 +356,9 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.detail.Assignment", {
                 this.oIconTabBar
             ],
             footer: new sap.m.Bar({
+                contentLeft: [
+                    this.oEditorButton
+                ],
                 contentRight: [
                     this.oEditButton,
                     this.oSaveButton,

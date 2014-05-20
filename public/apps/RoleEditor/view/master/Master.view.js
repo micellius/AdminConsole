@@ -25,9 +25,22 @@ sap.ui.jsview("tests.adminconsole.apps.RoleEditor.view.master.Master", {
             path: "/roles",
             factory: function(sId){
                 return new sap.m.StandardListItem(sId, {
-                    title: "{objectName}",
+                    title: {
+                        path: "objectName",
+                        formatter: function(objectName) {
+                            var aParts = objectName.split('::');
+                            return aParts.length > 1 ? aParts[aParts.length-1] : objectName;
+                        }
+                    },
                     tooltip: "{objectName}",
-                    description: "{roleId}",
+                    description: {
+                        path: "roleId",
+                        formatter: function(roleId) {
+                            var objectName = this.getBindingContext().getObject().objectName,
+                                aParts = objectName.split('::');
+                            return aParts.length > 1 ? (aParts[0] + ' / ' + roleId) : roleId;
+                        }
+                    },
                     customData: [
                         new sap.ui.core.CustomData({
                             key: "id",

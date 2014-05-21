@@ -211,6 +211,11 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
             return !!bValue ? "TRUE" : "FALSE";
         }
 
+        function convertDate(sDate) {
+            var arr;
+            return (arr = sDate.split(/[\/ :]/)) && ([arr[2], arr[1], arr[0]].join('-') + ' ' + [arr[3], arr[4], arr[5]].join(':'));
+        }
+
         oModel.attachRequestCompleted(function(oEvent) {
             if(oEvent.getParameter('success')) {
                 oDeferred.resolve(oModel.getData());
@@ -241,8 +246,8 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                         samlInfo: [],
                         state: bUpdate ? "edit" : "new",
                         userName: oData.generalName,
-                        validFrom: oData.generalValidFrom,
-                        validUntil: oData.generalValidUntil,
+                        validFrom: oData.generalValidFrom ? convertDate(oData.generalValidFrom) : "",
+                        validUntil: oData.generalValidUntil ? convertDate(oData.generalValidUntil) : "",
                         x509Info: []
 
                     },

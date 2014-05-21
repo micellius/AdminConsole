@@ -188,7 +188,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                 done(function(sName) { // Wrap with closure, otherwise sName will always be the last one
                     return function () {
                         oEventBus.publish('deleteUser', {
-                            roleName: sName
+                            userName: sName
                         });
                     }
                 }(sName)).

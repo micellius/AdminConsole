@@ -37,10 +37,25 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.detail.Detail", {
                 value: "{/generalName}",
                 editable: "{/editMode}"
             }), new sap.m.Label({
-                text: "ID"
+                visible: '{/editMode}',
+                text: "Password"
             }), new sap.m.Input({
-                value: "{/generalId}",
-                editable: false
+                visible: '{/editMode}',
+                value: "{/generalPassword}",
+                editable: "{/editMode}",
+                type: sap.m.InputType.Password
+            }), new sap.m.Label({
+                text: "Valid From"
+            }), new sap.m.DateTimeInput({
+                value: "{/generalValidFrom}",
+                valueFormat: "dd/MM/yyyy hh:mm:ss",
+                editable: "{/editMode}"
+            }), new sap.m.Label({
+                text: "Valid Until"
+            }), new sap.m.DateTimeInput({
+                value: "{/generalValidUntil}",
+                valueFormat: "dd/MM/yyyy hh:mm:ss",
+                editable: "{/editMode}"
             })]
         });
 
@@ -62,6 +77,19 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.detail.Detail", {
             }
         });
 
+        function stringToBooleanFormatter(sValue) {
+            return sValue === "TRUE";
+        }
+
+        function bindSelected(sPath, fnCallback) {
+            return typeof fnCallback == 'function' ? function(oEvent) {
+                this.getModel().setProperty(sPath, this.getSelected() ? "TRUE" : "FALSE");
+                fnCallback(oEvent);
+            } : function() {
+                this.getModel().setProperty(sPath, this.getSelected() ? "TRUE" : "FALSE");
+            }
+        }
+
         this.oProperties = new sap.m.Panel({
             headerToolbar: new sap.m.Toolbar({
                 content: [
@@ -75,15 +103,59 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.detail.Detail", {
             content: new sap.ui.layout.form.SimpleForm({
                 maxContainerCols: 2,
                 content: [new sap.m.Label({
-                    text: "User Mode"
-                }), new sap.m.Input({
-                    value: "{/propertiesUserMode}",
-                    editable: "{/editMode}"
+                    text: "Password Enabled"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesPasswordEnabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesPasswordEnabled')
                 }), new sap.m.Label({
-                    text: "User Creator"
-                }), new sap.m.Input({
-                    value: "{/propertiesUserCreator}",
-                    editable: "{/editMode}"
+                    text: "Kerberos"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesKerberosEnabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesKerberosEnabled')
+                }), new sap.m.Label({
+                    text: "SAML"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesSAMLEnabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesSAMLEnabled')
+                }), new sap.m.Label({
+                    text: "X509"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesX509Enabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesX509Enabled')
+                }), new sap.m.Label({
+                    text: "SAP Logon Ticket"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesSapLogonTicketEnabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesSapLogonTicketEnabled')
+                }), new sap.m.Label({
+                    text: "SAP Assertion Ticket"
+                }), new sap.m.CheckBox({
+                    selected: {
+                        path:"/propertiesSapAssertionTicketEnabled",
+                        formatter: stringToBooleanFormatter
+                    },
+                    enabled: "{/editMode}",
+                    select: bindSelected('/propertiesSapAssertionTicketEnabled')
                 })]
             })
         });
@@ -112,7 +184,6 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.detail.Detail", {
         this.oEditButton = new sap.m.Button({
             visible: not("/editMode"),
             text: "Edit",
-            enabled: false,
             press: function() {
                 view.getModel().setProperty("/editMode", true);
             }

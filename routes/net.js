@@ -2182,6 +2182,45 @@ function getUsers() {
     };
 }
 
+function updatePrivilege4User(opts) {
+    if(opts.userInfo.state === 'new') {
+        users.push({
+            "userName": opts.userInfo.userName,
+            "isPasswordEnabled": opts.userInfo.isPasswordEnabled,
+            "isKerberosEnabled": opts.userInfo.isKerberosEnabled,
+            "isSAMLEnabled": opts.userInfo.isSAMLEnabled,
+            "isX509Enabled": opts.userInfo.isX509Enabled,
+            "userMode": "LOCAL",
+            "deactivated": "FALSE",
+            "deactivationTime": null,
+            "lastInvalidConnectAttempt": null,
+            "invalidConnectAttempts": 0,
+            "lastSuccessConnect": null,
+            "pwdChangedNeeded": "FALSE",
+            "adminGivenPwd": "TRUE",
+            "isSapLogonTicketEnabled": opts.userInfo.isSapLogonTicketEnabled,
+            "isSapAssertionTicketEnabled": opts.userInfo.isSapAssertionTicketEnabled,
+            "validFrom": opts.userInfo.validFrom || new Date().toISOString().replace(/-/g,'/').replace(/T/, ' ').replace(/\..+/, ''),
+            "validUntil": opts.userInfo.validUntil,
+            "sessionClient": null,
+            "externalIdentity": null,
+            "lockReason": "0"
+        });
+    }
+
+    return {
+        sqlResult: 0,
+        successCode: 200,
+        successMsg: "Updating security data for '" + opts.userInfo.userName + "' user succeeded"
+    }
+}
+
+function getUser(opts) {
+    return users.filter(function(item) {
+        return item.userName === opts.userName;
+    })[0];
+}
+
 exports.post = function(req, res){
     switch(req.body.absoluteFunctionName) {
         // Roles
@@ -2248,6 +2287,16 @@ exports.post = function(req, res){
         case 'sap.hana.ide.core.base.server.getUsers':
         case 'sap.hana.ide.core.plugins.security.server.hana.getUsers':
             res.json(getUsers());
+            break;
+        // Create / Update User
+        case 'sap.hana.ide.core.base.server.updatePrivilege4User':
+        case 'sap.hana.ide.core.plugins.security.server.hana.updatePrivilege4User':
+            res.json(updatePrivilege4User(req.body.inputObject));
+            break;
+        // Get User
+        case 'sap.hana.ide.core.base.server.getUser':
+        case 'sap.hana.ide.core.plugins.security.server.hana.getUser':
+            res.json(getUser(req.body.inputObject));
             break;
         default:
             res.status(404).end();

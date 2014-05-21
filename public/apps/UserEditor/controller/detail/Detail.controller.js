@@ -33,9 +33,15 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                     headerUnit: 'User',
                     headerNumber: '1',
                     generalName: 'New User',
-                    generalId: '',
-                    propertiesUserMode: '',
-                    propertiesUserCreator: '',
+                    generalPassword: '',
+                    generalValidFrom: null,
+                    generalValidUntil: null,
+                    propertiesPasswordEnabled: false,
+                    propertiesKerberosEnabled: false,
+                    propertiesSAMLEnabled: false,
+                    propertiesX509Enabled: false,
+                    propertiesSapLogonTicketEnabled: false,
+                    propertiesSapAssertionTicketEnabled: false,
                     editMode: true,
                     newMode: true,
                     allowAssign: false,
@@ -51,9 +57,15 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                     headerUnit: 'User',
                     headerNumber: '1',
                     generalName: oUser.userName,
-                    generalId: oUser.userName,
-                    propertiesUserMode: oUser.userMode,
-                    propertiesUserCreator: oUser.userMode,
+                    generalPassword: '',
+                    generalValidFrom: oUser.validFrom,
+                    generalValidUntil: oUser.validUntil,
+                    propertiesPasswordEnabled: oUser.isPasswordEnabled,
+                    propertiesKerberosEnabled: oUser.isKerberosEnabled,
+                    propertiesSAMLEnabled: oUser.isSAMLEnabled,
+                    propertiesX509Enabled: oUser.isX509Enabled,
+                    propertiesSapLogonTicketEnabled: oUser.isSapLogonTicketEnabled,
+                    propertiesSapAssertionTicketEnabled: oUser.isSapAssertionTicketEnabled,
                     editMode: false,
                     newMode: false,
                     allowAssign: true,
@@ -70,9 +82,15 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                     headerUnit: 'Users',
                     headerNumber: aUsers.length,
                     generalName: '',
-                    generalId: '',
-                    propertiesUserMode: '',
-                    propertiesUserCreator: '',
+                    generalPassword: '',
+                    generalValidFrom: null,
+                    generalValidUntil: null,
+                    propertiesPasswordEnabled: false,
+                    propertiesKerberosEnabled: false,
+                    propertiesSAMLEnabled: false,
+                    propertiesX509Enabled: false,
+                    propertiesSapLogonTicketEnabled: false,
+                    propertiesSapAssertionTicketEnabled: false,
                     editMode: false,
                     newMode: false,
                     allowAssign: false,
@@ -97,7 +115,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
             API = tests.adminconsole.apps.UserEditor.utils.API;
         oView.setBusy(true);
         if(oModel.getProperty('/newMode')) {
-            oController._createUser(sName).
+            oController._createUser(oModel.getData()).
                 done(function() {
                     oController._getUser(sName).
                         done(function(oUser) {
@@ -108,9 +126,15 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                                 headerUnit: 'User',
                                 headerNumber: '1',
                                 generalName: oUser.userName,
-                                generalId: oUser.userName,
-                                propertiesUserMode: oUser.userMode,
-                                propertiesUserCreator: oUser.userMode,
+                                generalPassword: '',
+                                generalValidFrom: oUser.validFrom,
+                                generalValidUntil: oUser.validUntil,
+                                propertiesPasswordEnabled: oUser.isPasswordEnabled,
+                                propertiesKerberosEnabled: oUser.isKerberosEnabled,
+                                propertiesSAMLEnabled: oUser.isSAMLEnabled,
+                                propertiesX509Enabled: oUser.isX509Enabled,
+                                propertiesSapLogonTicketEnabled: oUser.isSapLogonTicketEnabled,
+                                propertiesSapAssertionTicketEnabled: oUser.isSapAssertionTicketEnabled,
                                 editMode: false,
                                 newMode: false,
                                 deleteDialogTitle: "Delete User?",
@@ -180,10 +204,14 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
         }
     },
 
-    _createUser: function(sUserName) {
+    _createUser: function(oData) {
         var oModel = new sap.ui.model.json.JSONModel(),
             oDeferred = $.Deferred(),
             API = tests.adminconsole.apps.UserEditor.utils.API;
+
+        function booleanToString(bValue) {
+            return !!bValue ? "TRUE" : "FALSE";
+        }
 
         oModel.attachRequestCompleted(function(oEvent) {
             if(oEvent.getParameter('success')) {
@@ -200,13 +228,25 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
                 oHeaders;
-            // TODO: check params
+
             oParams = JSON.stringify({
                 "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4User"),
                 "inputObject": {
-                    "roleInfo": {
-                        "roleName": sUserName,
-                        "state": "new"
+                    "userInfo": {
+                        isKerberosEnabled: booleanToString(oData.propertiesKerberosEnabled),
+                        isPasswordEnabled: booleanToString(oData.propertiesPasswordEnabled),
+                        isSAMLEnabled: booleanToString(oData.propertiesSAMLEnabled),
+                        isSapAssertionTicketEnabled: booleanToString(oData.propertiesSapAssertionTicketEnabled),
+                        isSapLogonTicketEnabled: booleanToString(oData.propertiesSapLogonTicketEnabled),
+                        isX509Enabled: booleanToString(oData.propertiesX509Enabled),
+                        password: oData.generalPassword,
+                        samlInfo: [],
+                        state: "new",
+                        userName: oData.generalName,
+                        validFrom: oData.generalValidFrom,
+                        validUntil: oData.generalValidUntil,
+                        x509Info: []
+
                     },
                     privilegesToGrant: [],
                     privilegesToRevoke: []
@@ -253,7 +293,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
                 oHeaders;
-            // TODO: check params
+
             oParams = JSON.stringify({
                 "absoluteFunctionName": API.getAbsoluteFunctionName("getUser"),
                 "inputObject": {
@@ -301,7 +341,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
         this.oAppController.getCsrfToken(function(csrfToken) {
             var oParams,
                 oHeaders;
-            // TODO: check params
+
             oParams = JSON.stringify({
                 "absoluteFunctionName": API.getAbsoluteFunctionName("deleteUser"),
                 "inputObject": {

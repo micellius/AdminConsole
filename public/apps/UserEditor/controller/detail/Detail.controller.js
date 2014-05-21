@@ -114,46 +114,44 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
             sName = oModel.getProperty('/generalName'),
             API = tests.adminconsole.apps.UserEditor.utils.API;
         oView.setBusy(true);
-        if(oModel.getProperty('/newMode')) {
-            oController._createUser(oModel.getData()).
-                done(function() {
-                    oController._getUser(sName).
-                        done(function(oUser) {
-                            oUser = API.normalizeUser(oUser);
-                            oModel.setData({
-                                headerTitle: oUser.userName,
-                                headerDesctiption: oUser.userMode,
-                                headerUnit: 'User',
-                                headerNumber: '1',
-                                generalName: oUser.userName,
-                                generalPassword: '',
-                                generalValidFrom: oUser.validFrom,
-                                generalValidUntil: oUser.validUntil,
-                                propertiesPasswordEnabled: oUser.isPasswordEnabled,
-                                propertiesKerberosEnabled: oUser.isKerberosEnabled,
-                                propertiesSAMLEnabled: oUser.isSAMLEnabled,
-                                propertiesX509Enabled: oUser.isX509Enabled,
-                                propertiesSapLogonTicketEnabled: oUser.isSapLogonTicketEnabled,
-                                propertiesSapAssertionTicketEnabled: oUser.isSapAssertionTicketEnabled,
-                                editMode: false,
-                                newMode: false,
-                                deleteDialogTitle: "Delete User?",
-                                deleteDialogText: "Are you sure you want to delete user\n" + oUser.userName + "?"
-                            });
-                            oController.oAppController.oEventBus.publish('addUser', oUser);
-                        }).
-                        fail(function() {
-                            console.error('Get user failed!');
-                        }).
-                        always(function() {
-                            oView.setBusy(false);
-                            oModel.setProperty('/editMode', false);
+        oController._createUser(oModel.getData(), !oModel.getProperty('/newMode')).
+            done(function() {
+                oController._getUser(sName).
+                    done(function(oUser) {
+                        oUser = API.normalizeUser(oUser);
+                        oModel.setData({
+                            headerTitle: oUser.userName,
+                            headerDesctiption: oUser.userMode,
+                            headerUnit: 'User',
+                            headerNumber: '1',
+                            generalName: oUser.userName,
+                            generalPassword: '',
+                            generalValidFrom: oUser.validFrom,
+                            generalValidUntil: oUser.validUntil,
+                            propertiesPasswordEnabled: oUser.isPasswordEnabled,
+                            propertiesKerberosEnabled: oUser.isKerberosEnabled,
+                            propertiesSAMLEnabled: oUser.isSAMLEnabled,
+                            propertiesX509Enabled: oUser.isX509Enabled,
+                            propertiesSapLogonTicketEnabled: oUser.isSapLogonTicketEnabled,
+                            propertiesSapAssertionTicketEnabled: oUser.isSapAssertionTicketEnabled,
+                            editMode: false,
+                            newMode: false,
+                            deleteDialogTitle: "Delete User?",
+                            deleteDialogText: "Are you sure you want to delete user\n" + oUser.userName + "?"
                         });
-                }).
-                fail(function() {
-                    console.error('Create user failed!');
-                });
-        }
+                        oController.oAppController.oEventBus.publish('addUser', oUser);
+                    }).
+                    fail(function() {
+                        console.error('Get user failed!');
+                    }).
+                    always(function() {
+                        oView.setBusy(false);
+                        oModel.setProperty('/editMode', false);
+                    });
+            }).
+            fail(function() {
+                console.error('Create user failed!');
+            });
     },
 
     onCancelPress: function() {
@@ -204,7 +202,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
         }
     },
 
-    _createUser: function(oData) {
+    _createUser: function(oData, bUpdate) {
         var oModel = new sap.ui.model.json.JSONModel(),
             oDeferred = $.Deferred(),
             API = tests.adminconsole.apps.UserEditor.utils.API;
@@ -241,7 +239,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.detail.Detail",
                         isX509Enabled: booleanToString(oData.propertiesX509Enabled),
                         password: oData.generalPassword,
                         samlInfo: [],
-                        state: "new",
+                        state: bUpdate ? "edit" : "new",
                         userName: oData.generalName,
                         validFrom: oData.generalValidFrom,
                         validUntil: oData.generalValidUntil,

@@ -96,6 +96,60 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
         }
     },
 
+    onSettingsPress: function() {
+        this.getView().oSettingsDialog.open();
+    },
+
+    onSettingsDialogResetPress: function() {
+        var oController = this;
+        var API = tests.adminconsole.apps.UserEditor.utils.API;
+        this.oAppController.getCsrfToken(function(csrfToken) {
+            $.ajax({
+                type: "POST",
+                url: API.netServiceUrl,
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "x-sap-dont-debug": 1,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4User"),
+                    "inputObject":{
+                        privilegesToGrant: [],
+                        privilegesToRevoke: [{
+                            grantee: "SAPPHIRE",
+                            granteeType: "USER",
+                            grantor: "_SYS_REPO",
+                            isGrantable: "FALSE",
+                            objectId: "adminconsole::IOT-_SYS_REPO",
+                            objectName: "adminconsole::IOT",
+                            objectType: "ROLE",
+                            roleName: "adminconsole::IOT",
+                            state: "edit"
+                        }],
+                        userInfo: {
+                            password: "",
+                            samlInfo: [],
+                            state: "edit",
+                            userName: "SAPPHIRE",
+                            x509Info: []
+                        }
+                    }
+                })
+            }).done(function () {
+                jQuery.sap.log.info("Reset successful!");
+                oController.getView().oSettingsDialog.close();
+            }).fail(function() {
+                jQuery.sap.log.error("Reset failed!");
+                oController.getView().oSettingsDialog.close();
+            });
+        });
+    },
+
+    onSettingsDialogCancelPress: function() {
+        this.getView().oSettingsDialog.close();
+    },
+
     _selectItems: function(ids) {
         this.loadDataPromise.done(function() {
             var oList = this.controller.getView().oList,

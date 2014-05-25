@@ -15,6 +15,21 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
             }
         });
 
+        this.oSettingsDialog = new sap.m.Dialog({
+            title: "Rest Changes?",
+            content: sap.m.Text({
+                text: "Remove assignment of adminconsole::IOT role to SAPPHIRE user?"
+            }),
+            leftButton: new sap.m.Button({
+                text: "Reset",
+                press: [oController.onSettingsDialogResetPress, oController]
+            }),
+            rightButton: new sap.m.Button({
+                text: "Cancel",
+                press: [oController.onSettingsDialogCancelPress, oController]
+            })
+        });
+
         this.oList = new sap.m.List({
             mode: sap.m.ListMode.MultiSelect,
             select: [oController.onListSelect, oController],
@@ -55,7 +70,8 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
 
         this.oSettingsButton = new sap.m.Button({
             icon: "sap-icon://settings",
-            enabled: false
+            enabled: true,
+            press: [oController.onSettingsPress, oController]
         });
 
         this.oFilterButton = new sap.m.Button({
@@ -65,9 +81,7 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
 
         this.oSortButton = new sap.m.Button({
             icon: "sap-icon://sort",
-            press: function() {
-                oController.sort()
-            }
+            press: [oController.sort, oController]
         });
 
         this.oAddButton = new sap.m.Button({

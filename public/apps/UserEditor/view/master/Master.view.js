@@ -17,7 +17,7 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
 
         this.oSettingsDialog = new sap.m.Dialog({
             title: "Rest Changes?",
-            content: sap.m.Text({
+            content: new sap.m.Text({
                 text: "Remove assignment of adminconsole::IOT role to SAPPHIRE user?"
             }),
             leftButton: new sap.m.Button({

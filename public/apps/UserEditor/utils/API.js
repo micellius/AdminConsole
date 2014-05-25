@@ -9,7 +9,7 @@ jQuery.sap.declare("tests.adminconsole.apps.UserEditor.utils.API");
 tests.adminconsole.apps.UserEditor.utils.API = {
     csrfServiceUrl: '/sap/hana/xs/ide/editor/server/csrf.xsjs',
     netServiceUrl: '/sap/hana/ide/core/base/server/net.xsjs',
-    packageName: location.hostname.indexOf('.emea.global.corp.sap') !== -1 ? 'sap.hana.ide.core.plugins.security.server.hana' : 'sap.hana.ide.core.base.server',
+    packageName: (location.hostname.indexOf('.emea.global.corp.sap') !== -1 ? 'sap.hana.ide.core.plugins.security.server.hana' : 'sap.hana.ide.core.base.server'),
     getAbsoluteFunctionName: function(apiName) {
         return [tests.adminconsole.apps.UserEditor.utils.API.packageName, apiName].join('.');
     },

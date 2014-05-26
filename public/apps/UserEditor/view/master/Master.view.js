@@ -34,6 +34,12 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
                 }), this.oSettingsDialogLumiraAnalystUserInput = new sap.m.Input({
                     value: "CHRISTINA",
                     tooltip: "Remove assignment of BI_DATA_ANALYST from specified user"
+                }), new sap.m.Label({
+                    text: "Custom"
+                }), this.oSettingsDialogCustomUserInput = new sap.m.Input({
+                    value: "",
+                    placeholder: "USER_0, USER_1, USER_2",
+                    tooltip: "Remove all role assignments except PUBLIC role for users (use , as delimiter)"
                 })]
             }),
             leftButton: new sap.m.Button({

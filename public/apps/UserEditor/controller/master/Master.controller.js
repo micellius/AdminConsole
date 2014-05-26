@@ -101,12 +101,16 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
     },
 
     onSettingsDialogResetPress: function() {
-        var oController = this,
+        var i, l,
+            oController = this,
             oView = this.getView(),
             API = tests.adminconsole.apps.UserEditor.utils.API,
             sIotUser = oView.oSettingsDialogIotUserInput.getValue(),
             sLumiraTechUser = oView.oSettingsDialogLumiraTechUserInput.getValue(),
-            sLumiraAnalystUser = oView.oSettingsDialogLumiraAnalystUserInput.getValue();
+            sLumiraAnalystUser = oView.oSettingsDialogLumiraAnalystUserInput.getValue(),
+            aCustomUsers = (oView.oSettingsDialogCustomUserInput.getValue() || ''). // => "USER1, USER_2 , User3,,"
+                split(/\s*,\s*/). // => ["USER1", "USER_2", "User3", "", ""]
+                filter(function(item){return !!item;}); // => ["USER1", "USER_2", "User3"]
 
         this.oAppController.getCsrfToken(function(csrfToken) {
 
@@ -233,7 +237,80 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
                 jQuery.sap.log.error("Reset Lumira analyst user permissions failed!");
                 oController.getView().oSettingsDialog.close();
             });
+
         });
+
+        // Custom
+        for(i=0, l=aCustomUsers.length; i<l; i++) {
+            oController._revokeAllRoles(aCustomUsers[i], ["PUBLIC"]);
+        }
+    },
+
+    _revokeAllRoles: function(sUserName, aExceptRoles) {
+        var nCounter,
+            oDeferred,
+            aRoles,
+            API;
+
+        function fnAlways() {
+            nCounter++;
+            if(nCounter === aExceptRoles.length) {
+                oDeferred.resolve();
+            }
+        }
+
+        API = tests.adminconsole.apps.UserEditor.utils.API;
+        nCounter = 0;
+        oDeferred = $.Deferred();
+        aExceptRoles = aExceptRoles || [];
+
+        this.oAppController.getCsrfToken(function (csrfToken) {
+            // Get list of all roles
+            $.ajax({
+                type: "POST",
+                url: API.netServiceUrl,
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "x-sap-dont-debug": 1,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "absoluteFunctionName": API.getAbsoluteFunctionName("getRolesByGrantee"),
+                    "inputObject": {
+                        "grantee": sUserName
+                    }
+                })
+            }).done(function(data) {
+
+                aRoles = data.roles.filter(function(item) {
+                    return aExceptRoles.indexOf(item.roleName) === -1;
+                });
+
+                // Revoke roles
+                $.ajax({
+                    type: "POST",
+                    url: API.netServiceUrl,
+                    headers: {
+                        "X-CSRF-Token": csrfToken,
+                        "x-sap-dont-debug": 1,
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4User"),
+                        "inputObject": {
+                            privilegesToGrant: [],
+                            privilegesToRevoke: aRoles,
+                            userInfo: {
+                                state: "edit",
+                                userName: sUserName
+                            }
+                        }
+                    })
+                }).always(fnAlways);
+            });
+        });
+
+        return oDeferred.promise();
     },
 
     onSettingsDialogCancelPress: function() {

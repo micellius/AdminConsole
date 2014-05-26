@@ -314,8 +314,15 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
         sTableModelRoot = opts.root.substring(1);
         // Selected items in the table located in selected tab
         aSelectedItems = oTable.getSelectedItems();
-        // Table data
-        oTableData = oTableModel.getData()[sTableModelRoot];
+        /*
+         * Table data.
+         * Copy of the original data array is used in order to avoid
+         * indexing issues with binding context of each item, which is
+         * not automatically updated once item is removed from array.
+         * Actual data will be updated as an atomic operation before
+         * update of the model.
+         */
+        oTableData = oTableModel.getData()[sTableModelRoot].slice();
 
         for(i=0, l=aSelectedItems.length; i<l; i++) {
             // Data binded to selected item
@@ -339,6 +346,8 @@ sap.ui.controller("tests.adminconsole.apps.RoleEditor.controller.detail.Assignme
 
         // Clear table selection
         oTable.removeSelections();
+        // Update Data
+        oTableModel.getData()[sTableModelRoot] = oTableData;
         // Update bindings and UI
         oTableModel.refresh(true);
         // Exit from edit mode

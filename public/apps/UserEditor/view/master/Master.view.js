@@ -17,8 +17,24 @@ sap.ui.jsview("tests.adminconsole.apps.UserEditor.view.master.Master", {
 
         this.oSettingsDialog = new sap.m.Dialog({
             title: "Rest Changes?",
-            content: new sap.m.Text({
-                text: "Remove assignment of adminconsole::IOT role to SAPPHIRE user?"
+            content: new sap.ui.layout.form.SimpleForm({
+                maxContainerCols: 2,
+                content: [new sap.m.Label({
+                    text: "IOT User"
+                }), this.oSettingsDialogIotUserInput = new sap.m.Input({
+                    value: "SAPPHIRE",
+                    tooltip: "Remove assignment of adminconsole::IOT from specified user"
+                }), new sap.m.Label({
+                    text: "Lumira Technical User"
+                }), this.oSettingsDialogLumiraTechUserInput = new sap.m.Input({
+                    value: "SAP_BI_TECH_USER",
+                    tooltip: "Remove assignment of sap.bi.common::BI_TECH_USER and sap.bi.discover::BI_DISCOVER_SCHEDULER_PRIV from specified user"
+                }), new sap.m.Label({
+                    text: "Lumira Analyst User"
+                }), this.oSettingsDialogLumiraAnalystUserInput = new sap.m.Input({
+                    value: "CHRISTINA",
+                    tooltip: "Remove assignment of BI_DATA_ANALYST from specified user"
+                })]
             }),
             leftButton: new sap.m.Button({
                 text: "Reset",

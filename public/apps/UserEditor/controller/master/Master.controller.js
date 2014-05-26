@@ -101,9 +101,16 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
     },
 
     onSettingsDialogResetPress: function() {
-        var oController = this;
-        var API = tests.adminconsole.apps.UserEditor.utils.API;
+        var oController = this,
+            oView = this.getView(),
+            API = tests.adminconsole.apps.UserEditor.utils.API,
+            sIotUser = oView.oSettingsDialogIotUserInput.getValue(),
+            sLumiraTechUser = oView.oSettingsDialogLumiraTechUserInput.getValue(),
+            sLumiraAnalystUser = oView.oSettingsDialogLumiraAnalystUserInput.getValue();
+
         this.oAppController.getCsrfToken(function(csrfToken) {
+
+            // IOT User
             $.ajax({
                 type: "POST",
                 url: API.netServiceUrl,
@@ -117,7 +124,7 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
                     "inputObject":{
                         privilegesToGrant: [],
                         privilegesToRevoke: [{
-                            grantee: "SAPPHIRE",
+                            grantee: sIotUser,
                             granteeType: "USER",
                             grantor: "_SYS_REPO",
                             isGrantable: "FALSE",
@@ -128,19 +135,102 @@ sap.ui.controller("tests.adminconsole.apps.UserEditor.controller.master.Master",
                             state: "edit"
                         }],
                         userInfo: {
-                            password: "",
-                            samlInfo: [],
                             state: "edit",
-                            userName: "SAPPHIRE",
-                            x509Info: []
+                            userName: sIotUser
                         }
                     }
                 })
             }).done(function () {
-                jQuery.sap.log.info("Reset successful!");
+                jQuery.sap.log.info("Reset IOT user permissions successful!");
                 oController.getView().oSettingsDialog.close();
             }).fail(function() {
-                jQuery.sap.log.error("Reset failed!");
+                jQuery.sap.log.error("Reset IOT user permissions failed!");
+                oController.getView().oSettingsDialog.close();
+            });
+
+            // Lumira Technical User
+            $.ajax({
+                type: "POST",
+                url: API.netServiceUrl,
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "x-sap-dont-debug": 1,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4User"),
+                    "inputObject":{
+                        privilegesToGrant: [],
+                        privilegesToRevoke: [{
+                            grantee: sLumiraTechUser,
+                            granteeType: "USER",
+                            grantor: "_SYS_REPO",
+                            isGrantable: "FALSE",
+                            objectId: "sap.bi.common::BI_TECH_USER-_SYS_REPO",
+                            objectName: "sap.bi.common::BI_TECH_USER",
+                            objectType: "ROLE",
+                            roleName: "sap.bi.common::BI_TECH_USER",
+                            state: "edit"
+                        }, {
+                            grantee: "SAP_BI_TECH_USER",
+                            granteeType: "USER",
+                            grantor: "_SYS_REPO",
+                            isGrantable: "FALSE",
+                            objectId: "sap.bi.discover::BI_DISCOVER_SCHEDULER_PRIV-_SYS_REPO",
+                            objectName: "sap.bi.discover::BI_DISCOVER_SCHEDULER_PRIV",
+                            objectType: "ROLE",
+                            roleName: "sap.bi.discover::BI_DISCOVER_SCHEDULER_PRIV",
+                            state: "edit"
+                        }],
+                        userInfo: {
+                            state: "edit",
+                            userName: sLumiraTechUser
+                        }
+                    }
+                })
+            }).done(function () {
+                jQuery.sap.log.info("Reset Lumira technical user permissions successful!");
+                oController.getView().oSettingsDialog.close();
+            }).fail(function() {
+                jQuery.sap.log.error("Reset Lumira technical user permissions failed!");
+                oController.getView().oSettingsDialog.close();
+            });
+
+            // Lumira Analyst User
+            $.ajax({
+                type: "POST",
+                url: API.netServiceUrl,
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "x-sap-dont-debug": 1,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    "absoluteFunctionName": API.getAbsoluteFunctionName("updatePrivilege4User"),
+                    "inputObject":{
+                        privilegesToGrant: [],
+                        privilegesToRevoke: [{
+                            grantee: sLumiraAnalystUser,
+                            granteeType: "USER",
+                            grantor: "_SYS_REPO",
+                            isGrantable: "FALSE",
+                            objectId: "sap.bi.common::BI_DATA_ANALYST-_SYS_REPO",
+                            objectName: "sap.bi.common::BI_DATA_ANALYST",
+                            objectType: "ROLE",
+                            roleName: "sap.bi.common::BI_DATA_ANALYST",
+                            state: "edit"
+                        }],
+                        userInfo: {
+                            state: "edit",
+                            userName: sLumiraAnalystUser
+                        }
+                    }
+                })
+            }).done(function () {
+                jQuery.sap.log.info("Reset Lumira analyst user permissions successful!");
+                oController.getView().oSettingsDialog.close();
+            }).fail(function() {
+                jQuery.sap.log.error("Reset Lumira analyst user permissions failed!");
                 oController.getView().oSettingsDialog.close();
             });
         });
